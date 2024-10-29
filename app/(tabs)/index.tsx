@@ -1,70 +1,158 @@
-import { Image, StyleSheet, Platform } from 'react-native';
-
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
+import { StyleSheet, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 import { ThemedView } from '@/components/ThemedView';
+import { ThemedText } from '@/components/ThemedText';
+import { useState } from 'react';
+import { Link } from 'expo-router';
+import { Colors } from '@/constants/Colors';
+import { useColorScheme } from '@/hooks/useColorScheme';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-export default function HomeScreen() {
+export default function LoginScreen() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const colorScheme = useColorScheme();
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({ ios: 'cmd + d', android: 'cmd + m' })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+    <SafeAreaView style={{ flex: 1 }}>
+      <ScrollView>
+        <ThemedView style={styles.container}>
+          {/* Header */}
+          <ThemedText type="title" style={styles.title}>Sign in to your Account</ThemedText>
+          <ThemedText style={styles.subtitle}>Enter your email and password to log in</ThemedText>
+
+          {/* Form */}
+          <ThemedText style={styles.label}>Email</ThemedText>
+          <TextInput
+            style={[
+              styles.input,
+              { 
+                color: Colors[colorScheme ?? 'light'].text,
+                borderColor: Colors[colorScheme ?? 'light'].tabIconDefault,
+              }
+            ]}
+            value={email}
+            onChangeText={setEmail}
+            placeholder="Enter your email"
+            placeholderTextColor={Colors[colorScheme ?? 'light'].tabIconDefault}
+            autoCapitalize="none"
+            keyboardType="email-address"
+          />
+
+          <ThemedText style={styles.label}>Password</ThemedText>
+          <TextInput
+            style={[
+              styles.input,
+              { 
+                color: Colors[colorScheme ?? 'light'].text,
+                borderColor: Colors[colorScheme ?? 'light'].tabIconDefault,
+              }
+            ]}
+            value={password}
+            onChangeText={setPassword}
+            placeholder="Enter your password"
+            placeholderTextColor={Colors[colorScheme ?? 'light'].tabIconDefault}
+            secureTextEntry
+          />
+
+          <Link href="/forgot-password" style={styles.forgotPassword}>
+            <ThemedText style={{ color: '#3B82F6' }}>Forgot Password?</ThemedText>
+          </Link>
+
+          {/* Login Button */}
+          <TouchableOpacity 
+            style={styles.loginButton}
+            onPress={() => console.log('Login pressed')}
+          >
+            <ThemedText style={styles.loginButtonText}>Log In</ThemedText>
+          </TouchableOpacity>
+
+          <ThemedText style={styles.orText}>Or</ThemedText>
+
+          {/* Social Logins */}
+          <TouchableOpacity style={styles.socialButton}>
+            <ThemedText style={styles.socialButtonText}>Continue with Google</ThemedText>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.socialButton}>
+            <ThemedText style={styles.socialButtonText}>Continue with Facebook</ThemedText>
+          </TouchableOpacity>
+
+          {/* Sign Up Link */}
+          <ThemedView style={styles.signupContainer}>
+            <ThemedText>Don't have an account? </ThemedText>
+            <Link href="/signup">
+              <ThemedText style={{ color: '#3B82F6' }}>Sign Up</ThemedText>
+            </Link>
+          </ThemedView>
+        </ThemedView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  container: {
+    flex: 1,
+    padding: 24,
+    paddingTop: 48,
   },
-  stepContainer: {
-    gap: 8,
+  title: {
+    fontSize: 28,
+    fontWeight: 'bold',
     marginBottom: 8,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  subtitle: {
+    color: '#6B7280',
+    marginBottom: 32,
+  },
+  label: {
+    marginBottom: 8,
+  },
+  input: {
+    height: 48,
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    marginBottom: 16,
+  },
+  forgotPassword: {
+    alignSelf: 'flex-end',
+    marginBottom: 24,
+  },
+  loginButton: {
+    backgroundColor: '#3B82F6',
+    height: 48,
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  loginButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  orText: {
+    textAlign: 'center',
+    marginVertical: 16,
+    color: '#6B7280',
+  },
+  socialButton: {
+    height: 48,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  socialButtonText: {
+    fontSize: 16,
+  },
+  signupContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 48,
+    marginBottom: 24,
   },
 });

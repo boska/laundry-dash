@@ -27,7 +27,15 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow LaundryDash to use your location.",
+          "locationAlwaysPermission": "Allow LaundryDash to use your location in the background.",
+          "locationWhenInUsePermission": "Allow LaundryDash to use your location while using the app."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
