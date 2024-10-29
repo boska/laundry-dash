@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import React from 'react';
+import { usePathname } from 'expo-router';
 
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
@@ -7,12 +7,17 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const pathname = usePathname();
+
+  // Hide tab bar on the login screen (index route)
+  const hideTabBar = true;
 
   return (
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
+        tabBarStyle: hideTabBar ? { display: 'none' } : undefined,
       }}>
       <Tabs.Screen
         name="index"
