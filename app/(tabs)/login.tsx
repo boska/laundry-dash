@@ -61,7 +61,7 @@ const LoginScreen = () => {
     return (
         <ThemedView style={styles.container}>
             <ThemedView style={styles.header}>
-                <ThemedText type="title" style={styles.title}>Sign in to your Account</ThemedText>
+                <ThemedText type="title" style={styles.title}>Ohahhaha!</ThemedText>
                 <ThemedText style={[styles.subtitle, { color: Colors[colorScheme ?? 'light'].tabIconDefault }]}>
                     Enter your email and password to log in
                 </ThemedText>
@@ -135,7 +135,7 @@ const LoginScreen = () => {
 
                 <Pressable
                     style={styles.forgotPassword}
-                    onPress={() => router.push('/(tabs)/forgot-password')}
+                    onPress={() => router.push('/avatar')}
                 >
                     <ThemedText style={styles.link}>Forgot Password?</ThemedText>
                 </Pressable>

@@ -6,7 +6,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
 import { ScrollViewWrapper } from '@/components/ScrollViewWrapper';
 
-export default function SimpleScreen() {
+export default function AvatarScreen() {
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const [refreshing, setRefreshing] = useState(false);
 
@@ -66,20 +66,24 @@ export default function SimpleScreen() {
         >
             <ThemedView style={styles.container}>
                 <ThemedView style={styles.header}>
-                    <ThemedText type="title" style={styles.title}>Simple Screen</ThemedText>
+                    <ThemedText type="title" style={styles.title}>Take a selfie</ThemedText>
                     <ThemedText style={styles.subtitle}>
                         Take a photo or pick from gallery
                     </ThemedText>
                 </ThemedView>
 
-                {selectedImage && (
-                    <ThemedView style={styles.imageContainer}>
+                <ThemedView style={styles.imageContainer}>
+                    {selectedImage ? (
                         <Image
                             source={{ uri: selectedImage }}
                             style={styles.image}
                         />
-                    </ThemedView>
-                )}
+                    ) : (
+                        <ThemedView style={[styles.image, styles.placeholderContainer]}>
+                            <Ionicons name="person" size={80} color="#CBD5E1" />
+                        </ThemedView>
+                    )}
+                </ThemedView>
 
                 <ThemedView style={styles.buttonContainer}>
                     <Pressable
@@ -154,6 +158,11 @@ const styles = StyleSheet.create({
         borderRadius: 100,
         borderWidth: 3,
         borderColor: '#3b82f6',
+    },
+    placeholderContainer: {
+        backgroundColor: '#F1F5F9',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     contentContainer: {
         flexGrow: 1,
