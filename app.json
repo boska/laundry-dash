@@ -35,6 +35,12 @@
           "locationAlwaysPermission": "Allow LaundryDash to use your location in the background.",
           "locationWhenInUsePermission": "Allow LaundryDash to use your location while using the app."
         }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to let you share them."
+        }
       ]
     ],
     "experiments": {
