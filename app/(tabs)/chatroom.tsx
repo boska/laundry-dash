@@ -9,7 +9,8 @@ import {
     View,
     Pressable,
     Keyboard,
-    EmitterSubscription
+    EmitterSubscription,
+    Animated
 } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
@@ -28,22 +29,73 @@ interface Message {
 
 const inputAccessoryViewID = 'uniqueID';
 
+// Add this color utility at the top of the file
+const adjustOpacity = (hexColor: string, opacity: number): string => {
+    // Remove # if present
+    const hex = hexColor.replace('#', '');
+    const r = parseInt(hex.substring(0, 2), 16);
+    const g = parseInt(hex.substring(2, 4), 16);
+    const b = parseInt(hex.substring(4, 6), 16);
+    return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+};
+
 // Add this function before renderEmptyChat
-const LogoOptions = ({ colorScheme }: { colorScheme: 'light' | 'dark' | null }) => (
-    <View style={styles.logoOptionsContainer}>
-        <View style={styles.logoOption}>
-            <View style={[styles.logoContainer, { backgroundColor: 'rgba(0, 132, 255, 0.08)' }]}>
-                <FontAwesome
-                    name="shopping-basket"
-                    size={45}
-                    color={Colors[colorScheme ?? 'light'].tint}
-                />
+const LogoOptions = ({ colorScheme }: { colorScheme: 'light' | 'dark' | null }) => {
+    const tintColor = Colors[colorScheme ?? 'light'].tint;
+    return (
+        <View style={styles.logoOptionsContainer}>
+            <View style={styles.logoOption}>
+                <View style={[styles.logoContainer, { backgroundColor: adjustOpacity(tintColor, 0.08) }]}>
+                    <FontAwesome
+                        name="shopping-basket"
+                        size={45}
+                        color={tintColor}
+                    />
+                </View>
             </View>
         </View>
-    </View>
-);
+    );
+};
 
-// Update renderEmptyChat to use LogoOptions
+// Add this animation component before renderEmptyChat
+const BouncingArrow = ({ color }: { color: string }) => {
+    const bounceAnim = useRef(new Animated.Value(0)).current;
+
+    useEffect(() => {
+        const bounce = Animated.sequence([
+            Animated.timing(bounceAnim, {
+                toValue: 1,
+                duration: 1000,
+                useNativeDriver: true,
+            }),
+            Animated.timing(bounceAnim, {
+                toValue: 0,
+                duration: 1000,
+                useNativeDriver: true,
+            })
+        ]);
+
+        Animated.loop(bounce).start();
+    }, []);
+
+    const translateY = bounceAnim.interpolate({
+        inputRange: [0, 1],
+        outputRange: [0, 10]
+    });
+
+    return (
+        <Animated.View style={{ transform: [{ translateY }] }}>
+            <FontAwesome
+                name="arrow-down"
+                size={20}
+                color={color}
+                style={styles.arrowIcon}
+            />
+        </Animated.View>
+    );
+};
+
+// Update renderEmptyChat to use LogoOptions and BouncingArrow
 const renderEmptyChat = (colorScheme: 'light' | 'dark' | null) => (
     <View style={styles.emptyChatContainer}>
         <LogoOptions colorScheme={colorScheme} />
@@ -58,11 +110,17 @@ const renderEmptyChat = (colorScheme: 'light' | 'dark' | null) => (
 
         <View style={styles.featuresContainer}>
             {[
-                { icon: 'clock-o', text: 'Same Day Service' },
-                { icon: 'truck', text: 'Free Pickup & Delivery' },
-                { icon: 'star', text: 'Premium Quality' },
+                { icon: 'clock-o' as const, text: 'Same Day Service' },
+                { icon: 'truck' as const, text: 'Free Pickup & Delivery' },
+                { icon: 'star' as const, text: 'Premium Quality' },
             ].map((feature, index) => (
-                <View key={index} style={styles.featureItem}>
+                <View
+                    key={index}
+                    style={[
+                        styles.featureItem,
+                        { backgroundColor: adjustOpacity(Colors[colorScheme ?? 'light'].tint, 0.1) }
+                    ]}
+                >
                     <FontAwesome
                         name={feature.icon}
                         size={24}
@@ -79,12 +137,7 @@ const renderEmptyChat = (colorScheme: 'light' | 'dark' | null) => (
             <ThemedText style={styles.startText}>
                 Send a message to get started!
             </ThemedText>
-            <FontAwesome
-                name="arrow-down"
-                size={20}
-                color={Colors[colorScheme ?? 'light'].tint}
-                style={styles.arrowIcon}
-            />
+            <BouncingArrow color={Colors[colorScheme ?? 'light'].tint} />
         </View>
     </View>
 );
@@ -127,29 +180,38 @@ export default function ChatRoom() {
         }
     };
 
-    const renderMessage = (message: Message) => (
-        <View
-            key={message.id}
-            style={[
-                styles.messageContainer,
-                message.sender === 'user' ? styles.userMessage : styles.otherMessage,
-                {
-                    backgroundColor: message.sender === 'user'
-                        ? '#0084ff'
-                        : colorScheme === 'dark' ? '#2C2C2E' : '#E5E5EA'
-                }
-            ]}
-        >
-            <ThemedText
+    const renderMessage = (message: Message) => {
+        const tintColor = Colors[colorScheme ?? 'light'].tint;
+        const bgColor = message.sender === 'user'
+            ? tintColor
+            : colorScheme === 'dark'
+                ? '#2C2C2E'
+                : adjustOpacity(tintColor, 0.1);
+
+        return (
+            <View
+                key={message.id}
                 style={[
-                    styles.messageText,
-                    { color: message.sender === 'user' ? '#ffffff' : Colors[colorScheme ?? 'light'].text }
+                    styles.messageContainer,
+                    message.sender === 'user' ? styles.userMessage : styles.otherMessage,
+                    { backgroundColor: bgColor }
                 ]}
             >
-                {message.text}
-            </ThemedText>
-        </View>
-    );
+                <ThemedText
+                    style={[
+                        styles.messageText,
+                        {
+                            color: message.sender === 'user'
+                                ? '#ffffff'
+                                : Colors[colorScheme ?? 'light'].text
+                        }
+                    ]}
+                >
+                    {message.text}
+                </ThemedText>
+            </View>
+        );
+    };
 
     return (
         <KeyboardAvoidingView
@@ -188,7 +250,9 @@ export default function ChatRoom() {
                     style={[
                         styles.textInput,
                         {
-                            backgroundColor: colorScheme === 'dark' ? '#2C2C2E' : '#E5E5EA',
+                            backgroundColor: colorScheme === 'dark'
+                                ? '#2C2C2E'
+                                : adjustOpacity(Colors[colorScheme ?? 'light'].tint, 0.1),
                             color: Colors[colorScheme ?? 'light'].text,
                         }
                     ]}
@@ -203,7 +267,7 @@ export default function ChatRoom() {
                     <Ionicons
                         name="send"
                         size={24}
-                        color="#0084ff"
+                        color={Colors[colorScheme ?? 'light'].tint}
                     />
                 </Pressable>
             </View>
@@ -328,7 +392,7 @@ const styles = StyleSheet.create({
     startText: {
         fontSize: 16,
         fontWeight: '500',
-        marginBottom: 8,
+        marginBottom: 16,
     },
     arrowIcon: {
         opacity: 0.8,
