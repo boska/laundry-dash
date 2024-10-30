@@ -41,7 +41,7 @@ export default function TabLayout() {
         name="hello"
         options={{
           title: 'Hello',
-            tabBarIcon: ({ color, focused }) => (
+          tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
           ),
         }}

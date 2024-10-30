@@ -8,6 +8,6 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import LoginScreen from './login';
-import SimpleScreen from './avatar';
+import ChatRoom from './chatroom';
 
-export default LoginScreen;
+export default ChatRoom;
