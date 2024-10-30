@@ -19,8 +19,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { FontAwesome } from '@expo/vector-icons';
-import { useAppSelector, useAppDispatch } from '../../store/hooks';
-import { addMessage, setMessages, setInputText, clearInputText } from '../../store/chatroomSlice';
+import { useAppSelector, useAppDispatch } from '../store/hooks';
+import { addMessage, setMessages, setInputText, clearInputText } from '../store/chatroomSlice';
+import { Hero } from '@/components/Hero';
 
 interface Message {
     id: string;
@@ -219,14 +220,7 @@ export default function ChatRoom() {
     };
 
     return (
-        <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-            style={[
-                styles.container,
-                { backgroundColor: Colors[colorScheme ?? 'light'].background }
-            ]}
-            keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
-        >
+        <ThemedView style={styles.container}>
             <ScrollView
                 ref={scrollViewRef}
                 style={styles.messagesContainer}
@@ -239,7 +233,12 @@ export default function ChatRoom() {
             >
                 {messages.length > 0
                     ? messages.map(renderMessage)
-                    : renderEmptyChat(colorScheme)
+                    : <Hero
+                        colorScheme={colorScheme as 'light' | 'dark' | null}
+                        icon="chatbubble-ellipses-outline"
+                        title="No messages yet"
+                        subtitle="Start a conversation by typing a message below"
+                    />
                 }
             </ScrollView>
 
@@ -276,7 +275,7 @@ export default function ChatRoom() {
                     />
                 </Pressable>
             </View>
-        </KeyboardAvoidingView>
+        </ThemedView>
     );
 }
 

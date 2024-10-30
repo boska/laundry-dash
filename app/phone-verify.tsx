@@ -60,12 +60,6 @@ const PhoneNumberScreen = () => {
 
     return (
         <>
-            <Stack.Screen
-                options={{
-                    title: 'Phone Verification',
-                    headerShown: false,
-                }}
-            />
             <ThemedView style={styles.container}>
                 <ThemedView style={styles.header}>
                     <ThemedText type="title" style={styles.title}>Verify Your Phone</ThemedText>

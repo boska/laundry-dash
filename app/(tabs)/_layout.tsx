@@ -4,8 +4,18 @@ import { usePathname } from 'expo-router';
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { LaundryDash } from '@/components/LaundryDash';
 
-export default function TabLayout() {
+export default function TabLayout2() {
+  const colorScheme = useColorScheme();
+  return (
+    <>
+      <LaundryDash colorScheme={colorScheme as 'light' | 'dark' | null} />
+    </>
+  );
+}
+
+function TabLayout() {
   const colorScheme = useColorScheme();
   const pathname = usePathname();
 

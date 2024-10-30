@@ -10,7 +10,7 @@ export default function ExploreScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <TouchableOpacity 
+      <TouchableOpacity
         style={[styles.button, { backgroundColor: Colors[colorScheme ?? 'light'].tint }]}
         onPress={() => {
           // Note: useColorScheme from react-native doesn't allow setting the theme

@@ -90,12 +90,6 @@ const SignupScreen = () => {
 
     return (
         <>
-            <Stack.Screen
-                options={{
-                    title: 'Sign Up',
-                    headerShown: false,
-                }}
-            />
             <ThemedView style={styles.container}>
                 <ThemedView style={styles.header}>
                     <ThemedText type="title" style={styles.title}>Create your Account</ThemedText>
@@ -204,7 +198,7 @@ const SignupScreen = () => {
 
                     <ThemedView style={styles.footer}>
                         <ThemedText>Already have an account? </ThemedText>
-                        <Link href="/" asChild>
+                        <Link href="/login" asChild>
                             <Pressable>
                                 <ThemedText style={styles.link}>Log In</ThemedText>
                             </Pressable>

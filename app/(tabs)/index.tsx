@@ -7,7 +7,9 @@ import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import LoginScreen from './login';
-import ChatRoom from './chatroom';
+import LoginScreen from '../login';
+import ChatRoom from '../chatroom';
 
-export default ChatRoom;
+export default function Index() {
+    return <ChatRoom />;
+}
