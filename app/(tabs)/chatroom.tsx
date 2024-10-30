@@ -19,6 +19,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { FontAwesome } from '@expo/vector-icons';
+import { useAppSelector, useAppDispatch } from '../../store/hooks';
+import { addMessage, setMessages, setInputText, clearInputText } from '../../store/chatroomSlice';
 
 interface Message {
     id: string;
@@ -143,8 +145,10 @@ const renderEmptyChat = (colorScheme: 'light' | 'dark' | null) => (
 );
 
 export default function ChatRoom() {
-    const [messages, setMessages] = useState<Message[]>([]);
-    const [text, setText] = useState('');
+    const messages = useAppSelector(state => state.chatroom.messages);
+    const isLoading = useAppSelector(state => state.chatroom.isLoading);
+    const inputText = useAppSelector(state => state.chatroom.inputText);
+    const dispatch = useAppDispatch();
     const [isKeyboardVisible, setKeyboardVisible] = useState(false);
     const insets = useSafeAreaInsets();
     const scrollViewRef = useRef<ScrollView>(null);
@@ -165,19 +169,20 @@ export default function ChatRoom() {
     }, []);
 
     const sendMessage = () => {
-        if (text.trim()) {
-            const newMessage: Message = {
-                id: Date.now().toString(),
-                text: text.trim(),
-                sender: 'user',
-                timestamp: new Date()
-            };
-            setMessages([...messages, newMessage]);
-            setText('');
-            setTimeout(() => {
-                scrollViewRef.current?.scrollToEnd({ animated: true });
-            }, 100);
-        }
+        if (!inputText.trim()) return;
+
+        const newMessage = {
+            id: Date.now().toString(),
+            text: inputText.trim(),
+            sender: 'user' as const,
+            timestamp: Date.now(),
+        };
+
+        dispatch(addMessage(newMessage));
+        dispatch(clearInputText());
+
+        // Optional: Scroll to bottom after sending
+        scrollViewRef.current?.scrollToEnd({ animated: true });
     };
 
     const renderMessage = (message: Message) => {
@@ -257,8 +262,8 @@ export default function ChatRoom() {
                         }
                     ]}
                     inputAccessoryViewID={inputAccessoryViewID}
-                    onChangeText={setText}
-                    value={text}
+                    onChangeText={(text) => dispatch(setInputText(text))}
+                    value={inputText}
                     placeholder="Type a message..."
                     placeholderTextColor={Colors[colorScheme ?? 'light'].tabIconDefault}
                     multiline
