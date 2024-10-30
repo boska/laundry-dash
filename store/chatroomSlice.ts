@@ -31,6 +31,9 @@ const chatroomSlice = createSlice({
         setMessages: (state, action: PayloadAction<Message[]>) => {
             state.messages = action.payload;
         },
+        clearMessages: (state) => {
+            state.messages = [];
+        },
         setLoading: (state, action: PayloadAction<boolean>) => {
             state.isLoading = action.payload;
         },
@@ -49,6 +52,7 @@ const chatroomSlice = createSlice({
 export const {
     addMessage,
     setMessages,
+    clearMessages,
     setLoading,
     setError,
     setInputText,
