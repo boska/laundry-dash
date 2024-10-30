@@ -51,6 +51,8 @@ const LoginScreen = () => {
                 email: email.trim(),
                 password: password
             });
+
+            router.push('/chatroom');
         } finally {
             setIsLoading(false);
         }

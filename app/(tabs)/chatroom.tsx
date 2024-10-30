@@ -15,6 +15,9 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Colors } from '@/constants/Colors';
+import { useColorScheme } from '@/hooks/useColorScheme';
+import { FontAwesome } from '@expo/vector-icons';
 
 interface Message {
     id: string;
@@ -25,12 +28,74 @@ interface Message {
 
 const inputAccessoryViewID = 'uniqueID';
 
+// Add this function before renderEmptyChat
+const LogoOptions = ({ colorScheme }: { colorScheme: 'light' | 'dark' | null }) => (
+    <View style={styles.logoOptionsContainer}>
+        <View style={styles.logoOption}>
+            <View style={[styles.logoContainer, { backgroundColor: 'rgba(0, 132, 255, 0.08)' }]}>
+                <FontAwesome
+                    name="shopping-basket"
+                    size={45}
+                    color={Colors[colorScheme ?? 'light'].tint}
+                />
+            </View>
+        </View>
+    </View>
+);
+
+// Update renderEmptyChat to use LogoOptions
+const renderEmptyChat = (colorScheme: 'light' | 'dark' | null) => (
+    <View style={styles.emptyChatContainer}>
+        <LogoOptions colorScheme={colorScheme} />
+
+        <ThemedText type="title" style={styles.emptyChatText}>
+            Laundry Dash
+        </ThemedText>
+
+        <ThemedText style={styles.emptyChatSubtext}>
+            24/7 door-to-door laundry service
+        </ThemedText>
+
+        <View style={styles.featuresContainer}>
+            {[
+                { icon: 'clock-o', text: 'Same Day Service' },
+                { icon: 'truck', text: 'Free Pickup & Delivery' },
+                { icon: 'star', text: 'Premium Quality' },
+            ].map((feature, index) => (
+                <View key={index} style={styles.featureItem}>
+                    <FontAwesome
+                        name={feature.icon}
+                        size={24}
+                        color={Colors[colorScheme ?? 'light'].tint}
+                    />
+                    <ThemedText style={styles.featureText}>
+                        {feature.text}
+                    </ThemedText>
+                </View>
+            ))}
+        </View>
+
+        <View style={styles.startContainer}>
+            <ThemedText style={styles.startText}>
+                Send a message to get started!
+            </ThemedText>
+            <FontAwesome
+                name="arrow-down"
+                size={20}
+                color={Colors[colorScheme ?? 'light'].tint}
+                style={styles.arrowIcon}
+            />
+        </View>
+    </View>
+);
+
 export default function ChatRoom() {
     const [messages, setMessages] = useState<Message[]>([]);
     const [text, setText] = useState('');
     const [isKeyboardVisible, setKeyboardVisible] = useState(false);
     const insets = useSafeAreaInsets();
     const scrollViewRef = useRef<ScrollView>(null);
+    const colorScheme = useColorScheme();
 
     useEffect(() => {
         const keyboardWillShow = Keyboard.addListener('keyboardWillShow', () => {
@@ -67,32 +132,32 @@ export default function ChatRoom() {
             key={message.id}
             style={[
                 styles.messageContainer,
-                message.sender === 'user' ? styles.userMessage : styles.otherMessage
+                message.sender === 'user' ? styles.userMessage : styles.otherMessage,
+                {
+                    backgroundColor: message.sender === 'user'
+                        ? '#0084ff'
+                        : colorScheme === 'dark' ? '#2C2C2E' : '#E5E5EA'
+                }
             ]}
         >
             <ThemedText
                 style={[
                     styles.messageText,
-                    message.sender === 'user' && styles.userMessageText
+                    { color: message.sender === 'user' ? '#ffffff' : Colors[colorScheme ?? 'light'].text }
                 ]}
             >
                 {message.text}
             </ThemedText>
-            {/* <ThemedText
-                style={[
-                    styles.timestamp,
-                    message.sender === 'user' && styles.userTimestamp
-                ]}
-            >
-                {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-            </ThemedText> */}
         </View>
     );
 
     return (
         <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-            style={styles.container}
+            style={[
+                styles.container,
+                { backgroundColor: Colors[colorScheme ?? 'light'].background }
+            ]}
             keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
         >
             <ScrollView
@@ -100,27 +165,46 @@ export default function ChatRoom() {
                 style={styles.messagesContainer}
                 contentContainerStyle={{
                     paddingBottom: 16,
-                    paddingTop: insets.top || 16
+                    paddingTop: insets.top || 16,
+                    flexGrow: 1
                 }}
                 keyboardDismissMode="interactive"
             >
-                {messages.map(renderMessage)}
+                {messages.length > 0
+                    ? messages.map(renderMessage)
+                    : renderEmptyChat(colorScheme)
+                }
             </ScrollView>
 
             <View style={[
                 styles.inputContainer,
-                { paddingBottom: isKeyboardVisible ? 8 : insets.bottom }
+                {
+                    paddingBottom: isKeyboardVisible ? 8 : insets.bottom,
+                    backgroundColor: Colors[colorScheme ?? 'light'].background,
+                    borderTopColor: 'transparent'
+                }
             ]}>
                 <TextInput
-                    style={styles.textInput}
+                    style={[
+                        styles.textInput,
+                        {
+                            backgroundColor: colorScheme === 'dark' ? '#2C2C2E' : '#E5E5EA',
+                            color: Colors[colorScheme ?? 'light'].text,
+                        }
+                    ]}
                     inputAccessoryViewID={inputAccessoryViewID}
                     onChangeText={setText}
                     value={text}
                     placeholder="Type a message..."
+                    placeholderTextColor={Colors[colorScheme ?? 'light'].tabIconDefault}
                     multiline
                 />
                 <Pressable onPress={sendMessage} style={styles.sendButton}>
-                    <Ionicons name="send" size={24} color="#007AFF" />
+                    <Ionicons
+                        name="send"
+                        size={24}
+                        color="#0084ff"
+                    />
                 </Pressable>
             </View>
         </KeyboardAvoidingView>
@@ -130,61 +214,44 @@ export default function ChatRoom() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#f5f5f5',
     },
     messagesContainer: {
         flex: 1,
         padding: 16,
     },
     messageContainer: {
-        maxWidth: '80%',
+        maxWidth: '70%',
         padding: 12,
-        borderRadius: 16,
+        borderRadius: 20,
         marginBottom: 8,
     },
     userMessage: {
         alignSelf: 'flex-end',
-        backgroundColor: '#007AFF',
     },
     otherMessage: {
         alignSelf: 'flex-start',
-        backgroundColor: '#E5E5EA',
-    },
-    userMessageText: {
-        color: '#ffffff',
-    },
-    userTimestamp: {
-        color: 'rgba(255, 255, 255, 0.7)',
     },
     messageText: {
         fontSize: 16,
-        color: '#000000',
-    },
-    timestamp: {
-        fontSize: 12,
-        opacity: 0.7,
-        marginTop: 4,
-        alignSelf: 'flex-end',
-        color: '#000000',
     },
     inputContainer: {
         flexDirection: 'row',
         padding: 8,
-        backgroundColor: '#fff',
-        borderTopWidth: 1,
-        borderTopColor: '#e0e0e0',
         alignItems: 'center',
+        paddingHorizontal: 16,
     },
     textInput: {
         flex: 1,
         padding: 12,
-        borderRadius: 20,
-        backgroundColor: '#f0f0f0',
+        paddingHorizontal: 16,
+        borderRadius: 25,
         marginRight: 8,
         maxHeight: 100,
+        fontSize: 16,
     },
     sendButton: {
         padding: 8,
+        marginLeft: 4,
     },
     inputAccessory: {
         backgroundColor: '#f8f8f8',
@@ -197,5 +264,73 @@ const styles = StyleSheet.create({
     clearButton: {
         color: '#007AFF',
         padding: 8,
+    },
+    emptyChatContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingHorizontal: 20,
+    },
+    logoOptionsContainer: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'center',
+        gap: 24,
+        marginBottom: 32,
+        paddingHorizontal: 16,
+    },
+    logoOption: {
+        alignItems: 'center',
+        gap: 8,
+    },
+    logoContainer: {
+        position: 'relative',
+        width: 100,
+        height: 100,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 20,
+        padding: 16,
+        marginBottom: 24,
+    },
+    emptyChatText: {
+        fontSize: 28,
+        fontWeight: 'bold',
+        marginBottom: 8,
+    },
+    emptyChatSubtext: {
+        fontSize: 18,
+        opacity: 0.7,
+        marginBottom: 32,
+        textAlign: 'center',
+    },
+    featuresContainer: {
+        width: '100%',
+        marginTop: 20,
+        gap: 16,
+    },
+    featureItem: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 12,
+        backgroundColor: 'rgba(0, 132, 255, 0.1)',
+        padding: 16,
+        borderRadius: 12,
+    },
+    featureText: {
+        fontSize: 16,
+        fontWeight: '500',
+    },
+    startContainer: {
+        marginTop: 40,
+        alignItems: 'center',
+    },
+    startText: {
+        fontSize: 16,
+        fontWeight: '500',
+        marginBottom: 8,
+    },
+    arrowIcon: {
+        opacity: 0.8,
     },
 });
