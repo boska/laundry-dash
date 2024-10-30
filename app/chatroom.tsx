@@ -21,7 +21,7 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 import { FontAwesome } from '@expo/vector-icons';
 import { useAppSelector, useAppDispatch } from '../store/hooks';
 import { addMessage, setMessages, setInputText, clearInputText } from '../store/chatroomSlice';
-import { Hero } from '@/components/Hero';
+import { NoData } from '@/components/NoData';
 
 interface Message {
     id: string;
@@ -97,53 +97,6 @@ const BouncingArrow = ({ color }: { color: string }) => {
         </Animated.View>
     );
 };
-
-// Update renderEmptyChat to use LogoOptions and BouncingArrow
-const renderEmptyChat = (colorScheme: 'light' | 'dark' | null) => (
-    <View style={styles.emptyChatContainer}>
-        <LogoOptions colorScheme={colorScheme} />
-
-        <ThemedText type="title" style={styles.emptyChatText}>
-            Laundry Dash
-        </ThemedText>
-
-        <ThemedText style={styles.emptyChatSubtext}>
-            24/7 door-to-door laundry service
-        </ThemedText>
-
-        <View style={styles.featuresContainer}>
-            {[
-                { icon: 'clock-o' as const, text: 'Same Day Service' },
-                { icon: 'truck' as const, text: 'Free Pickup & Delivery' },
-                { icon: 'star' as const, text: 'Premium Quality' },
-            ].map((feature, index) => (
-                <View
-                    key={index}
-                    style={[
-                        styles.featureItem,
-                        { backgroundColor: adjustOpacity(Colors[colorScheme ?? 'light'].tint, 0.1) }
-                    ]}
-                >
-                    <FontAwesome
-                        name={feature.icon}
-                        size={24}
-                        color={Colors[colorScheme ?? 'light'].tint}
-                    />
-                    <ThemedText style={styles.featureText}>
-                        {feature.text}
-                    </ThemedText>
-                </View>
-            ))}
-        </View>
-
-        <View style={styles.startContainer}>
-            <ThemedText style={styles.startText}>
-                Send a message to get started!
-            </ThemedText>
-            <BouncingArrow color={Colors[colorScheme ?? 'light'].tint} />
-        </View>
-    </View>
-);
 
 export default function ChatRoom() {
     const messages = useAppSelector(state => state.chatroom.messages);
@@ -233,7 +186,7 @@ export default function ChatRoom() {
             >
                 {messages.length > 0
                     ? messages.map(renderMessage)
-                    : <Hero
+                    : <NoData
                         colorScheme={colorScheme as 'light' | 'dark' | null}
                         icon="chatbubble-ellipses-outline"
                         title="No messages yet"

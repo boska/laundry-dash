@@ -34,6 +34,14 @@ export default function RootLayout() {
         <GestureHandlerRootView style={{ flex: 1 }}>
           <Drawer>
             <Drawer.Screen
+              name="(tabs)"
+              options={{
+                headerShown: true,
+                title: 'Home',
+                drawerLabel: 'Home'
+              }}
+            />
+            <Drawer.Screen
               name="login"
               options={{
                 headerShown: true,
@@ -55,6 +63,22 @@ export default function RootLayout() {
                 headerShown: true,
                 title: 'Phone Verification',
                 drawerLabel: 'Phone Verification'
+              }}
+            />
+            <Drawer.Screen
+              name="chatroom"
+              options={{
+                headerShown: true,
+                title: 'Support',
+                drawerLabel: 'Support'
+              }}
+            />
+            <Drawer.Screen
+              name="+not-found"
+              options={{
+                headerShown: true,
+                title: '404',
+                drawerLabel: '404'
               }}
             />
           </Drawer>

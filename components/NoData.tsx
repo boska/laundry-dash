@@ -4,19 +4,19 @@ import { ThemedText } from './ThemedText';
 import { Colors } from '@/constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
 
-interface HeroProps {
+interface NoDataProps {
     colorScheme: 'light' | 'dark' | null;
     icon?: keyof typeof Ionicons.glyphMap;
     title: string;
     subtitle: string;
 }
 
-export const Hero = ({
+export const NoData = ({
     colorScheme,
     icon = 'chatbubble-ellipses-outline',
     title = 'No messages yet',
     subtitle = 'Start a conversation by typing a message below'
-}: HeroProps) => {
+}: NoDataProps) => {
     return (
         <ThemedView style={styles.heroContainer}>
             <Ionicons
