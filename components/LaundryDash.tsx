@@ -1,11 +1,11 @@
-import { Animated, View } from 'react-native';
+import { Animated } from 'react-native';
 import { ThemedText } from './ThemedText';
 import { Colors } from '@/constants/Colors';
 import { useRef } from 'react';
-
 import { useEffect } from 'react';
 import FontAwesome from '@expo/vector-icons/build/FontAwesome';
 import { StyleSheet } from 'react-native';
+import { ThemedView } from './ThemedView';
 // Add this color utility at the top of the file
 const adjustOpacity = (hexColor: string, opacity: number): string => {
     // Remove # if present
@@ -18,17 +18,17 @@ const adjustOpacity = (hexColor: string, opacity: number): string => {
 const LogoOptions = ({ colorScheme }: { colorScheme: 'light' | 'dark' | null }) => {
     const tintColor = Colors[colorScheme ?? 'light'].tint;
     return (
-        <View style={styles.logoOptionsContainer}>
-            <View style={styles.logoOption}>
-                <View style={[styles.logoContainer, { backgroundColor: adjustOpacity(tintColor, 0.08) }]}>
+        <ThemedView style={styles.logoOptionsContainer}>
+            <ThemedView style={styles.logoOption}>
+                <ThemedView style={[styles.logoContainer, { backgroundColor: adjustOpacity(tintColor, 0.08) }]}>
                     <FontAwesome
                         name="shopping-basket"
                         size={45}
                         color={tintColor}
                     />
-                </View>
-            </View>
-        </View>
+                </ThemedView>
+            </ThemedView>
+        </ThemedView>
     );
 };
 
@@ -73,7 +73,7 @@ const BouncingArrow = ({ color }: { color: string }) => {
 
 
 export const LaundryDash = ({ colorScheme }: { colorScheme: 'light' | 'dark' | null }) => (
-    <View style={styles.emptyChatContainer}>
+    <ThemedView style={styles.emptyChatContainer}>
         <LogoOptions colorScheme={colorScheme} />
 
         <ThemedText type="title" style={styles.emptyChatText}>
@@ -84,13 +84,13 @@ export const LaundryDash = ({ colorScheme }: { colorScheme: 'light' | 'dark' | n
             24/7 door-to-door laundry service
         </ThemedText>
 
-        <View style={styles.featuresContainer}>
+        <ThemedView style={styles.featuresContainer}>
             {[
                 { icon: 'clock-o' as const, text: 'Same Day Service' },
                 { icon: 'truck' as const, text: 'Free Pickup & Delivery' },
                 { icon: 'star' as const, text: 'Premium Quality' },
             ].map((feature, index) => (
-                <View
+                <ThemedView
                     key={index}
                     style={[
                         styles.featureItem,
@@ -105,17 +105,17 @@ export const LaundryDash = ({ colorScheme }: { colorScheme: 'light' | 'dark' | n
                     <ThemedText style={styles.featureText}>
                         {feature.text}
                     </ThemedText>
-                </View>
+                </ThemedView>
             ))}
-        </View>
+        </ThemedView>
 
-        <View style={styles.startContainer}>
+        <ThemedView style={styles.startContainer}>
             <ThemedText style={styles.startText}>
                 Send a message to get started!
             </ThemedText>
             <BouncingArrow color={Colors[colorScheme ?? 'light'].tint} />
-        </View>
-    </View>
+        </ThemedView>
+    </ThemedView>
 );
 
 const styles = StyleSheet.create({

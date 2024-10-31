@@ -9,13 +9,14 @@ import { Ionicons } from '@expo/vector-icons';
 
 // You can expand this list as needed
 const countryCodes = [
-    { code: '+1', country: 'United States' },
-    { code: '+44', country: 'United Kingdom' },
-    { code: '+86', country: 'China' },
-    { code: '+81', country: 'Japan' },
-    { code: '+82', country: 'South Korea' },
-    { code: '+91', country: 'India' },
-    { code: '+61', country: 'Australia' },
+    { code: '+1', country: 'United States', emoji: '🇺🇸' },
+    { code: '+44', country: 'United Kingdom', emoji: '🇬🇧' },
+    { code: '+886', country: 'Taiwan', emoji: '🇹🇼' },
+    { code: '+86', country: 'China', emoji: '🇨🇳' },
+    { code: '+81', country: 'Japan', emoji: '🇯🇵' },
+    { code: '+82', country: 'South Korea', emoji: '🇰🇷' },
+    { code: '+91', country: 'India', emoji: '🇮🇳' },
+    { code: '+61', country: 'Australia', emoji: '🇦🇺' },
     // Add more country codes as needed
 ];
 
@@ -133,24 +134,30 @@ const PhoneNumberScreen = () => {
                     <ThemedView style={styles.modalContainer}>
                         <ThemedView style={styles.modalContent}>
                             <ThemedView style={styles.modalHeader}>
-                                <ThemedText style={styles.modalTitle}>Select Country</ThemedText>
                                 <Pressable onPress={() => setShowCountryModal(false)}>
-                                    <Ionicons name="close" size={24} color={Colors[colorScheme ?? 'light'].text} />
+                                    <ThemedText style={styles.modalCancelButton}>Cancel</ThemedText>
                                 </Pressable>
+                                <ThemedText style={styles.modalTitle}>Select Country</ThemedText>
                             </ThemedView>
                             <FlatList
                                 data={countryCodes}
                                 keyExtractor={(item) => item.code}
                                 renderItem={({ item }) => (
                                     <Pressable
-                                        style={styles.countryItem}
+                                        style={[
+                                            styles.countryItem
+                                        ]}
                                         onPress={() => {
                                             setSelectedCountry(item);
                                             setShowCountryModal(false);
                                         }}
                                     >
-                                        <ThemedText>{item.country}</ThemedText>
-                                        <ThemedText>{item.code}</ThemedText>
+                                        <ThemedText style={styles.countryEmoji}>{item.emoji}</ThemedText>
+                                        <ThemedText style={styles.countryName}>{item.country}</ThemedText>
+                                        <ThemedText style={styles.countryCode}>{item.code}</ThemedText>
+                                        {selectedCountry.code === item.code && (
+                                            <Ionicons name="checkmark" size={22} color="#007AFF" />
+                                        )}
                                     </Pressable>
                                 )}
                             />
@@ -235,33 +242,46 @@ const styles = StyleSheet.create({
     modalContainer: {
         flex: 1,
         justifyContent: 'flex-end',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        backgroundColor: 'rgba(0, 0, 0, 0.3)',
     },
     modalContent: {
-        borderTopLeftRadius: 16,
-        borderTopRightRadius: 16,
-        padding: 16,
-        maxHeight: '70%',
+        borderTopLeftRadius: 12,
+        borderTopRightRadius: 12,
+        maxHeight: '80%',
     },
     modalHeader: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingBottom: 16,
-        borderBottomWidth: 1,
-        borderBottomColor: '#e5e7eb',
+        padding: 16,
     },
     modalTitle: {
-        fontSize: 18,
+        fontSize: 17,
         fontWeight: '600',
+        textAlign: 'center',
+    },
+    modalCancelButton: {
+        fontSize: 17,
+        color: '#007AFF',
     },
     countryItem: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        alignItems: 'center',
         paddingVertical: 12,
         paddingHorizontal: 16,
-        borderBottomWidth: 1,
-        borderBottomColor: '#e5e7eb',
+    },
+    countryEmoji: {
+        fontSize: 22,
+        marginRight: 12,
+    },
+    countryName: {
+        flex: 1,
+        fontSize: 17,
+    },
+    countryCode: {
+        fontSize: 17,
+        color: '#8e8e93',
+        marginRight: 8,
     },
 });
 

@@ -61,7 +61,7 @@ export default function RootLayout() {
               name="phone-verify"
               options={{
                 headerShown: true,
-                title: 'Phone Verification',
+                title: '',
                 drawerLabel: 'Phone Verification'
               }}
             />
