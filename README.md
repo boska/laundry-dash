@@ -1,6 +1,97 @@
-# Welcome to your Expo app 👋
+# Welcome to Laundry Dash
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+
+## About me
+
+I'm an iOS developer who is learning how to build mobile apps with React Native.
+
+## Features
+
+### Authentication System
+- [x] Email & Password Sign Up/Login
+- [x] Phone Number Verification
+- [x] Password Strength Indicator
+- [x] Form Validation
+- [ ] Social Login Integration
+- [ ] Password Reset Flow
+- [ ] Email Verification
+
+### Chat System
+- [x] Real-time Messaging Interface
+- [x] Message History
+- [x] Keyboard-aware Input
+- [x] Auto-scroll to Latest Messages
+- [x] Empty State Handling
+- [ ] Image Sharing
+- [ ] Message Search
+- [ ] Read Receipts
+
+### UI/UX
+- [x] Dark/Light Theme Support
+- [x] iOS-style Design System
+- [x] Responsive Layouts
+- [x] Loading States
+- [x] Error Handling
+- [x] Safe Area Handling
+- [x] Custom Navigation
+- [ ] Haptic Feedback
+- [ ] Pull-to-Refresh
+
+### Media Features
+- [x] Photo Booth Functionality
+- [x] Camera Integration
+- [x] Image Gallery Access
+- [ ] Video Support
+- [ ] Image Filters
+- [ ] Cloud Storage Integration
+
+### Location Services
+- [x] Location Permission Handling
+- [x] Maps Integration
+- [ ] Address Autocomplete
+- [ ] Route Planning
+- [ ] Location Sharing
+
+## TechStack
+
+### Core
+- [x] React Native
+- [x] Expo SDK 51
+- [x] TypeScript
+- [ ] Jest Testing
+
+### Navigation
+- [x] Expo Router
+- [x] File-based Routing
+- [x] Drawer Navigation
+- [ ] Deep Linking
+
+### State Management
+- [x] Redux Toolkit
+- [x] React Hooks
+- [ ] Persistence Layer
+- [ ] Offline Support
+
+### UI Framework
+- [x] Custom Themed Components
+- [x] React Native Reanimated
+- [x] Expo Vector Icons
+- [x] Safe Area Context
+- [ ] Custom Animation Library
+
+### Backend Integration
+- [ ] REST API Integration
+- [ ] WebSocket Support
+- [ ] Push Notifications
+- [ ] Analytics Integration
+
+### Security
+- [x] Input Validation
+- [x] Secure Storage
+- [x] Permission Handling
+- [ ] Biometric Authentication
+- [ ] Certificate Pinning
 
 ## Get started
 
