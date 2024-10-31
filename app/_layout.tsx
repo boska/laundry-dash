@@ -9,6 +9,8 @@ import { store } from '../store/store';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Drawer } from 'expo-router/drawer';
+import { LanguageSelector } from '@/components/LanguageSelector';
+import { View } from 'react-native';
 
 SplashScreen.preventAutoHideAsync();
 

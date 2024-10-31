@@ -1,16 +1,35 @@
 import { Tabs } from 'expo-router';
 import { usePathname } from 'expo-router';
+import { useEffect } from 'react';
+import { Platform } from 'react-native';
+import * as Localization from 'expo-localization';
 
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { LaundryDash } from '@/components/LaundryDash';
+import { Language } from '@/constants/i18n';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { setLanguage } from '@/store/languageSlice';
 
 export default function TabLayout2() {
   const colorScheme = useColorScheme();
+  const dispatch = useAppDispatch();
+  const currentLanguage = useAppSelector(state => state.language.currentLanguage);
+
+  useEffect(() => {
+    // Get device locale on mount
+    const locale = Localization.locale;
+    const deviceLanguage = locale.startsWith('zh') ? 'zh-TW' : 'en';
+    dispatch(setLanguage(deviceLanguage as Language));
+  }, []);
+
   return (
     <>
-      <LaundryDash colorScheme={colorScheme as 'light' | 'dark' | null} />
+      <LaundryDash
+        colorScheme={colorScheme as 'light' | 'dark' | null}
+        language={currentLanguage}
+      />
     </>
   );
 }

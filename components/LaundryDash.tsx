@@ -6,6 +6,8 @@ import { useEffect } from 'react';
 import FontAwesome from '@expo/vector-icons/build/FontAwesome';
 import { StyleSheet } from 'react-native';
 import { ThemedView } from './ThemedView';
+import { getTranslation, Language } from '@/constants/i18n';
+import { LanguageSelector } from './LanguageSelector';
 // Add this color utility at the top of the file
 const adjustOpacity = (hexColor: string, opacity: number): string => {
     // Remove # if present
@@ -72,51 +74,62 @@ const BouncingArrow = ({ color }: { color: string }) => {
 };
 
 
-export const LaundryDash = ({ colorScheme }: { colorScheme: 'light' | 'dark' | null }) => (
-    <ThemedView style={styles.emptyChatContainer}>
-        <LogoOptions colorScheme={colorScheme} />
+interface LaundryDashProps {
+    colorScheme: 'light' | 'dark' | null;
+    language?: Language;
+}
 
-        <ThemedText type="title" style={styles.emptyChatText}>
-            Laundry Dash
-        </ThemedText>
+export const LaundryDash = ({ colorScheme, language = 'en' }: LaundryDashProps) => {
+    const t = getTranslation(language);
 
-        <ThemedText style={styles.emptyChatSubtext}>
-            24/7 door-to-door laundry service
-        </ThemedText>
+    return (
+        <ThemedView style={styles.emptyChatContainer}>
+            <LogoOptions colorScheme={colorScheme} />
 
-        <ThemedView style={styles.featuresContainer}>
-            {[
-                { icon: 'clock-o' as const, text: 'Same Day Service' },
-                { icon: 'truck' as const, text: 'Free Pickup & Delivery' },
-                { icon: 'star' as const, text: 'Premium Quality' },
-            ].map((feature, index) => (
-                <ThemedView
-                    key={index}
-                    style={[
-                        styles.featureItem,
-                        { backgroundColor: adjustOpacity(Colors[colorScheme ?? 'light'].tint, 0.1) }
-                    ]}
-                >
-                    <FontAwesome
-                        name={feature.icon}
-                        size={24}
-                        color={Colors[colorScheme ?? 'light'].tint}
-                    />
-                    <ThemedText style={styles.featureText}>
-                        {feature.text}
-                    </ThemedText>
-                </ThemedView>
-            ))}
-        </ThemedView>
-
-        <ThemedView style={styles.startContainer}>
-            <ThemedText style={styles.startText}>
-                Send a message to get started!
+            <ThemedText type="title" style={styles.emptyChatText}>
+                {t.laundryDash.title}
             </ThemedText>
-            <BouncingArrow color={Colors[colorScheme ?? 'light'].tint} />
+
+            <ThemedText style={styles.emptyChatSubtext}>
+                {t.laundryDash.subtitle}
+            </ThemedText>
+
+            <ThemedView style={styles.featuresContainer}>
+                {[
+                    { icon: 'clock-o' as const, text: t.laundryDash.features.sameDay },
+                    { icon: 'truck' as const, text: t.laundryDash.features.delivery },
+                    { icon: 'star' as const, text: t.laundryDash.features.quality },
+                ].map((feature, index) => (
+                    <ThemedView
+                        key={index}
+                        style={[
+                            styles.featureItem,
+                            { backgroundColor: adjustOpacity(Colors[colorScheme ?? 'light'].tint, 0.1) }
+                        ]}
+                    >
+                        <FontAwesome
+                            name={feature.icon}
+                            size={24}
+                            color={Colors[colorScheme ?? 'light'].tint}
+                        />
+                        <ThemedText style={styles.featureText}>
+                            {feature.text}
+                        </ThemedText>
+                    </ThemedView>
+                ))}
+            </ThemedView>
+
+            <ThemedView style={styles.startContainer}>
+                <ThemedText style={styles.startText}>
+                    {t.laundryDash.startMessage}
+                </ThemedText>
+                <BouncingArrow color={Colors[colorScheme ?? 'light'].tint} />
+            </ThemedView>
+
+            <LanguageSelector />
         </ThemedView>
-    </ThemedView>
-);
+    );
+};
 
 const styles = StyleSheet.create({
     container: {
