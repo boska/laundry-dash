@@ -100,20 +100,22 @@ const BouncingArrow = ({ color }: { color: string }) => {
 
 export default function ChatRoom() {
     const messages = useAppSelector(state => state.chatroom.messages);
-    const isLoading = useAppSelector(state => state.chatroom.isLoading);
     const inputText = useAppSelector(state => state.chatroom.inputText);
     const dispatch = useAppDispatch();
     const [isKeyboardVisible, setKeyboardVisible] = useState(false);
     const insets = useSafeAreaInsets();
     const scrollViewRef = useRef<ScrollView>(null);
     const colorScheme = useColorScheme();
+    const [keyboardHeight, setKeyboardHeight] = useState(0);
 
     useEffect(() => {
-        const keyboardWillShow = Keyboard.addListener('keyboardWillShow', () => {
+        const keyboardWillShow = Keyboard.addListener('keyboardWillShow', (e) => {
             setKeyboardVisible(true);
+            setKeyboardHeight(e.endCoordinates.height);
         });
         const keyboardWillHide = Keyboard.addListener('keyboardWillHide', () => {
             setKeyboardVisible(false);
+            setKeyboardHeight(0);
         });
 
         return () => {
@@ -195,10 +197,12 @@ export default function ChatRoom() {
                 }
             </ScrollView>
 
-            <View style={[
+            <KeyboardAvoidingView style={[
                 styles.inputContainer,
                 {
-                    paddingBottom: isKeyboardVisible ? 8 : insets.bottom,
+                    paddingBottom: isKeyboardVisible
+                        ? keyboardHeight + 8
+                        : Math.max(insets.bottom, 8),
                     backgroundColor: Colors[colorScheme ?? 'light'].background,
                     borderTopColor: 'transparent'
                 }
@@ -207,9 +211,7 @@ export default function ChatRoom() {
                     style={[
                         styles.textInput,
                         {
-                            backgroundColor: colorScheme === 'dark'
-                                ? '#2C2C2E'
-                                : adjustOpacity(Colors[colorScheme ?? 'light'].tint, 0.1),
+                            backgroundColor: adjustOpacity(Colors[colorScheme ?? 'light'].tint, 0.1),
                             color: Colors[colorScheme ?? 'light'].text,
                         }
                     ]}
@@ -227,7 +229,7 @@ export default function ChatRoom() {
                         color={Colors[colorScheme ?? 'light'].tint}
                     />
                 </Pressable>
-            </View>
+            </KeyboardAvoidingView>
         </ThemedView>
     );
 }
