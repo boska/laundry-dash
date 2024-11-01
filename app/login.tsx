@@ -139,6 +139,24 @@ const LoginScreen = () => {
         }
     };
 
+    const handleSocialLogin = async (provider: 'Google' | 'Facebook') => {
+        setIsLoading(true);
+        try {
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            Toast.show({
+                type: 'success',
+                text1: `${provider} Login Successful`,
+                text2: 'Welcome back to LaundryDash!',
+                position: 'bottom',
+                visibilityTime: 3000,
+            });
+            // Here you would typically navigate to the main app
+            // router.push('/');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     const isFormValid = email && password && !errors.email && !errors.password;
 
     return (
@@ -160,26 +178,38 @@ const LoginScreen = () => {
                     </ThemedView>
 
                     <ThemedView style={styles.socialButtonsContainer}>
-                        <Pressable style={[styles.socialButton, {
-                            backgroundColor: theme.cardBackground,
-                            borderColor: theme.border
-                        }]}>
+                        <Pressable
+                            style={[styles.socialButton, {
+                                backgroundColor: theme.cardBackground,
+                                borderColor: theme.border
+                            }]}
+                            onPress={() => handleSocialLogin('Google')}
+                            disabled={isLoading}
+                        >
                             <Image
                                 source={require('@/assets/images/google.png')}
                                 style={styles.socialIcon}
                             />
-                            <ThemedText style={styles.socialButtonText}>Continue with Google</ThemedText>
+                            <ThemedText style={styles.socialButtonText}>
+                                Continue with Google
+                            </ThemedText>
                         </Pressable>
 
-                        <Pressable style={[styles.socialButton, {
-                            backgroundColor: theme.cardBackground,
-                            borderColor: theme.border
-                        }]}>
+                        <Pressable
+                            style={[styles.socialButton, {
+                                backgroundColor: theme.cardBackground,
+                                borderColor: theme.border
+                            }]}
+                            onPress={() => handleSocialLogin('Facebook')}
+                            disabled={isLoading}
+                        >
                             <Image
                                 source={require('@/assets/images/facebook.png')}
                                 style={styles.socialIcon}
                             />
-                            <ThemedText style={styles.socialButtonText}>Continue with Facebook</ThemedText>
+                            <ThemedText style={styles.socialButtonText}>
+                                Continue with Facebook
+                            </ThemedText>
                         </Pressable>
                     </ThemedView>
 

@@ -5,12 +5,9 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 import { Provider } from 'react-redux';
 import { store } from '../store/store';
-import { View, StyleSheet } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Drawer } from 'expo-router/drawer';
-import { LanguageSelector } from '@/components/LanguageSelector';
 import { ThemeProvider as ThemeContextProvider, useTheme } from '../ctx/ThemeContext';
-import { ThemeToggle } from '@/components/ThemeToggle';
 import Toast from 'react-native-toast-message';
 
 SplashScreen.preventAutoHideAsync();
@@ -106,12 +103,3 @@ export default function RootLayout() {
     </ThemeContextProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  headerRight: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginRight: 16,
-    gap: 8,
-  },
-});
