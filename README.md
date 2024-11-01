@@ -6,6 +6,8 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
 
 I'm an iOS developer who is learning how to build mobile apps with React Native.
 
+Demo is here [Web](https://laundry-dash.vercel.app/)
+
 ## Features
 
 ### Authentication System
