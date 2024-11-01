@@ -6,6 +6,7 @@ import { router } from 'expo-router';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { Ionicons } from '@expo/vector-icons';
+import Toast from 'react-native-toast-message';
 
 const LoginScreen = () => {
     const [email, setEmail] = useState('');
@@ -46,14 +47,16 @@ const LoginScreen = () => {
         if (!validate()) return;
 
         setIsLoading(true);
-        try {
-            await new Promise(resolve => setTimeout(resolve, 2000));
-            console.log('Login credentials:', {
-                email: email.trim(),
-                password: password
-            });
 
-            router.push('/chatroom');
+        try {
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            Toast.show({
+                type: 'error',
+                text1: 'Login Failed',
+                text2: 'Invalid email or password. Please try again.',
+                position: 'bottom',
+                visibilityTime: 3000,
+            });
         } finally {
             setIsLoading(false);
         }
@@ -221,6 +224,7 @@ const LoginScreen = () => {
                     </ThemedView>
                 </ThemedView>
             </ScrollView>
+            <Toast />
         </KeyboardAvoidingView>
     );
 }
@@ -348,6 +352,12 @@ const styles = StyleSheet.create({
         color: '#dc2626',
         fontSize: 12,
         marginTop: 4,
+    },
+    errorContainer: {
+        backgroundColor: '#fee2e2',
+        padding: 12,
+        borderRadius: 8,
+        marginBottom: 16,
     },
 });
 

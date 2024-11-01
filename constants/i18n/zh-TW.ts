@@ -1,6 +1,6 @@
 export default {
     laundryDash: {
-        title: '洗衣服務',
+        title: '洗笑笑 Chill Laundry',
         subtitle: '專業便利的清洗服務',
         features: {
             sameDay: '當日服務',
@@ -13,32 +13,32 @@ export default {
             recommended: '推薦',
             basic: {
                 name: '基本',
-                price: '$2.99/磅',
+                price: 'NT$70/kg',
                 features: [
-                    '2-3天服務',
-                    '標準護理',
-                    '訂單滿$30免運'
+                    '3-4天服務',
+                    '基本清洗',
+                    '訂單滿$1000免運'
                 ]
             },
             premium: {
                 name: '進階',
-                price: '$3.99/磅',
+                price: 'NT$90/kg',
                 features: [
-                    '隔日服務',
-                    '優質護理',
+                    '2天服務',
+                    '精緻護理',
                     '免費運送',
-                    '污漬處理'
+                    '基礎污漬處理'
                 ]
             },
             express: {
                 name: '特快',
-                price: '$5.99/磅',
+                price: 'NT$120/kg',
                 features: [
-                    '當日服務',
-                    '優質護理',
+                    '當日送洗隔日取',
+                    '精緻護理',
                     '優先配送',
-                    '污漬處理',
-                    '特快處理'
+                    '進階污漬處理',
+                    '急件處理'
                 ]
             }
         }

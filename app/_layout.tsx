@@ -11,6 +11,7 @@ import { Drawer } from 'expo-router/drawer';
 import { LanguageSelector } from '@/components/LanguageSelector';
 import { ThemeProvider as ThemeContextProvider, useTheme } from '../ctx/ThemeContext';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import Toast from 'react-native-toast-message';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -101,6 +102,7 @@ export default function RootLayout() {
       <Provider store={store}>
         <NavigationContent />
       </Provider>
+      <Toast />
     </ThemeContextProvider>
   );
 }
