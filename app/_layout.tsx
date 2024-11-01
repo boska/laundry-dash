@@ -5,16 +5,89 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 import { Provider } from 'react-redux';
 import { store } from '../store/store';
-import { View } from 'react-native';
-import { useColorScheme } from '@/hooks/useColorScheme';
+import { View, StyleSheet } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Drawer } from 'expo-router/drawer';
 import { LanguageSelector } from '@/components/LanguageSelector';
+import { ThemeProvider as ThemeContextProvider, useTheme } from '../ctx/ThemeContext';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 SplashScreen.preventAutoHideAsync();
 
+function NavigationContent() {
+  const { theme } = useTheme();
+
+  return (
+    <ThemeProvider value={theme === 'dark' ? DarkTheme : DefaultTheme}>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <Drawer
+          screenOptions={({ route }) => ({
+            drawerItemStyle: {
+              display: ['(tabs)', 'login', 'settings'].includes(route.name) ? 'flex' : 'none'
+            },
+            headerRight: () => (
+              <View style={styles.headerRight}>
+                <LanguageSelector />
+                <ThemeToggle />
+              </View>
+            )
+          })}
+        >
+          <Drawer.Screen
+            name="(tabs)"
+            options={{
+              headerShown: true,
+              title: 'Home',
+              drawerLabel: 'Home'
+            }}
+          />
+          <Drawer.Screen
+            name="login"
+            options={{
+              headerShown: true,
+              title: 'Login',
+              drawerLabel: 'Login'
+            }}
+          />
+          <Drawer.Screen
+            name="signup"
+            options={{
+              headerShown: true,
+              title: 'Sign Up',
+              drawerLabel: 'Sign Up'
+            }}
+          />
+          <Drawer.Screen
+            name="phone-verify"
+            options={{
+              headerShown: true,
+              title: '',
+              drawerLabel: 'Phone Verification'
+            }}
+          />
+          <Drawer.Screen
+            name="chatroom"
+            options={{
+              headerShown: true,
+              title: 'Support',
+              drawerLabel: 'Support'
+            }}
+          />
+          <Drawer.Screen
+            name="+not-found"
+            options={{
+              headerShown: true,
+              title: '404',
+              drawerLabel: '404'
+            }}
+          />
+        </Drawer>
+      </GestureHandlerRootView>
+    </ThemeProvider>
+  );
+}
+
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
@@ -30,72 +103,19 @@ export default function RootLayout() {
   }
 
   return (
-    <Provider store={store}>
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <GestureHandlerRootView style={{ flex: 1 }}>
-          <Drawer
-            screenOptions={({ route }) => ({
-              drawerItemStyle: {
-                display: ['(tabs)', 'login'].includes(route.name) ? 'flex' : 'none'
-              },
-              headerRight: () => (
-                <View style={{ marginRight: 16 }}>
-                  <LanguageSelector />
-                </View>
-              )
-            })}
-          >
-            <Drawer.Screen
-              name="(tabs)"
-              options={{
-                headerShown: true,
-                title: 'Home',
-                drawerLabel: 'Home'
-              }}
-            />
-            <Drawer.Screen
-              name="login"
-              options={{
-                headerShown: true,
-                title: 'Login',
-                drawerLabel: 'Login'
-              }}
-            />
-            <Drawer.Screen
-              name="signup"
-              options={{
-                headerShown: true,
-                title: 'Sign Up',
-                drawerLabel: 'Sign Up'
-              }}
-            />
-            <Drawer.Screen
-              name="phone-verify"
-              options={{
-                headerShown: true,
-                title: '',
-                drawerLabel: 'Phone Verification'
-              }}
-            />
-            <Drawer.Screen
-              name="chatroom"
-              options={{
-                headerShown: true,
-                title: 'Support',
-                drawerLabel: 'Support'
-              }}
-            />
-            <Drawer.Screen
-              name="+not-found"
-              options={{
-                headerShown: true,
-                title: '404',
-                drawerLabel: '404'
-              }}
-            />
-          </Drawer>
-        </GestureHandlerRootView>
-      </ThemeProvider>
-    </Provider>
+    <ThemeContextProvider>
+      <Provider store={store}>
+        <NavigationContent />
+      </Provider>
+    </ThemeContextProvider>
   );
 }
+
+const styles = StyleSheet.create({
+  headerRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: 16,
+    gap: 8,
+  },
+});
