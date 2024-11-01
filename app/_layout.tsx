@@ -5,10 +5,11 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 import { Provider } from 'react-redux';
 import { store } from '../store/store';
-
+import { View } from 'react-native';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Drawer } from 'expo-router/drawer';
+import { LanguageSelector } from '@/components/LanguageSelector';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -36,7 +37,12 @@ export default function RootLayout() {
             screenOptions={({ route }) => ({
               drawerItemStyle: {
                 display: ['(tabs)', 'login'].includes(route.name) ? 'flex' : 'none'
-              }
+              },
+              headerRight: () => (
+                <View style={{ marginRight: 16 }}>
+                  <LanguageSelector />
+                </View>
+              )
             })}
           >
             <Drawer.Screen

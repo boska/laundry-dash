@@ -7,7 +7,6 @@ import FontAwesome from '@expo/vector-icons/build/FontAwesome';
 import { StyleSheet } from 'react-native';
 import { ThemedView } from './ThemedView';
 import { getTranslation, Language } from '@/constants/i18n';
-import { LanguageSelector } from './LanguageSelector';
 // Add this color utility at the top of the file
 const adjustOpacity = (hexColor: string, opacity: number): string => {
     // Remove # if present
@@ -125,8 +124,6 @@ export const LaundryDash = ({ colorScheme, language = 'en' }: LaundryDashProps) 
                 </ThemedText>
                 <BouncingArrow color={Colors[colorScheme ?? 'light'].tint} />
             </ThemedView>
-
-            <LanguageSelector />
         </ThemedView>
     );
 };
