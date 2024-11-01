@@ -1,12 +1,46 @@
 export default {
     laundryDash: {
-        title: 'Laundry Dash',
-        subtitle: '24/7 door-to-door laundry service',
+        title: 'Laundry Service',
+        subtitle: 'Professional Cleaning at Your Convenience',
         features: {
             sameDay: 'Same Day Service',
-            delivery: 'Free Pickup & Delivery',
-            quality: 'Premium Quality'
+            delivery: 'Free Delivery',
+            quality: 'Premium Service'
         },
-        startMessage: 'Send a message to get started!'
+        pricing: {
+            title: 'Pricing Plans',
+            recommended: 'Recommended',
+            basic: {
+                name: 'Basic',
+                price: '$2.99/lb',
+                features: [
+                    '2-3 Day Service',
+                    'Standard Care',
+                    'Free Delivery over $30'
+                ]
+            },
+            premium: {
+                name: 'Premium',
+                price: '$3.99/lb',
+                features: [
+                    'Next Day Service',
+                    'Premium Care',
+                    'Free Delivery',
+                    'Stain Treatment'
+                ]
+            },
+            express: {
+                name: 'Express',
+                price: '$5.99/lb',
+                features: [
+                    'Same Day Service',
+                    'Premium Care',
+                    'Priority Delivery',
+                    'Stain Treatment',
+                    'Express Processing'
+                ]
+            }
+        },
+        startMessage: 'Start your laundry service today'
     }
 }; 

@@ -7,6 +7,8 @@ import FontAwesome from '@expo/vector-icons/build/FontAwesome';
 import { StyleSheet } from 'react-native';
 import { ThemedView } from './ThemedView';
 import { getTranslation, Language } from '@/constants/i18n';
+import { ScrollView } from 'react-native';
+
 // Add this color utility at the top of the file
 const adjustOpacity = (hexColor: string, opacity: number): string => {
     // Remove # if present
@@ -72,6 +74,49 @@ const BouncingArrow = ({ color }: { color: string }) => {
     );
 };
 
+const PricingCard = ({
+    tier,
+    price,
+    features,
+    recommended,
+    colorScheme,
+    t
+}: {
+    tier: string;
+    price: string;
+    features: string[];
+    recommended?: boolean;
+    colorScheme: 'light' | 'dark' | null;
+    t: any;
+}) => {
+    const tintColor = Colors[colorScheme ?? 'light'].tint;
+
+    return (
+        <ThemedView style={[
+            styles.pricingCard,
+            recommended && {
+                borderColor: tintColor,
+                borderWidth: 2,
+            }
+        ]}>
+            {recommended && (
+                <ThemedView style={[styles.recommendedBadge, { backgroundColor: tintColor }]}>
+                    <ThemedText style={styles.recommendedText}>
+                        {t.laundryDash.pricing.recommended}
+                    </ThemedText>
+                </ThemedView>
+            )}
+            <ThemedText style={styles.pricingTier}>{tier}</ThemedText>
+            <ThemedText type="title" style={styles.pricingPrice}>{price}</ThemedText>
+            {features.map((feature, index) => (
+                <ThemedView key={index} style={styles.pricingFeature}>
+                    <FontAwesome name="check" size={16} color={tintColor} />
+                    <ThemedText style={styles.pricingFeatureText}>{feature}</ThemedText>
+                </ThemedView>
+            ))}
+        </ThemedView>
+    );
+};
 
 interface LaundryDashProps {
     colorScheme: 'light' | 'dark' | null;
@@ -82,49 +127,83 @@ export const LaundryDash = ({ colorScheme, language = 'en' }: LaundryDashProps) 
     const t = getTranslation(language);
 
     return (
-        <ThemedView style={styles.emptyChatContainer}>
-            <LogoOptions colorScheme={colorScheme} />
+        <ScrollView
+            style={styles.scrollView}
+            contentContainerStyle={styles.scrollViewContent}
+        >
+            <ThemedView style={styles.emptyChatContainer}>
+                <LogoOptions colorScheme={colorScheme} />
 
-            <ThemedText type="title" style={styles.emptyChatText}>
-                {t.laundryDash.title}
-            </ThemedText>
-
-            <ThemedText style={styles.emptyChatSubtext}>
-                {t.laundryDash.subtitle}
-            </ThemedText>
-
-            <ThemedView style={styles.featuresContainer}>
-                {[
-                    { icon: 'clock-o' as const, text: t.laundryDash.features.sameDay },
-                    { icon: 'truck' as const, text: t.laundryDash.features.delivery },
-                    { icon: 'star' as const, text: t.laundryDash.features.quality },
-                ].map((feature, index) => (
-                    <ThemedView
-                        key={index}
-                        style={[
-                            styles.featureItem,
-                            { backgroundColor: adjustOpacity(Colors[colorScheme ?? 'light'].tint, 0.1) }
-                        ]}
-                    >
-                        <FontAwesome
-                            name={feature.icon}
-                            size={24}
-                            color={Colors[colorScheme ?? 'light'].tint}
-                        />
-                        <ThemedText style={styles.featureText}>
-                            {feature.text}
-                        </ThemedText>
-                    </ThemedView>
-                ))}
-            </ThemedView>
-
-            <ThemedView style={styles.startContainer}>
-                <ThemedText style={styles.startText}>
-                    {t.laundryDash.startMessage}
+                <ThemedText type="title" style={styles.emptyChatText}>
+                    {t.laundryDash.title}
                 </ThemedText>
-                <BouncingArrow color={Colors[colorScheme ?? 'light'].tint} />
+
+                <ThemedText style={styles.emptyChatSubtext}>
+                    {t.laundryDash.subtitle}
+                </ThemedText>
+
+                <ThemedView style={styles.featuresContainer}>
+                    {[
+                        { icon: 'clock-o' as const, text: t.laundryDash.features.sameDay },
+                        { icon: 'truck' as const, text: t.laundryDash.features.delivery },
+                        { icon: 'star' as const, text: t.laundryDash.features.quality },
+                    ].map((feature, index) => (
+                        <ThemedView
+                            key={index}
+                            style={[
+                                styles.featureItem,
+                                { backgroundColor: adjustOpacity(Colors[colorScheme ?? 'light'].tint, 0.1) }
+                            ]}
+                        >
+                            <FontAwesome
+                                name={feature.icon}
+                                size={24}
+                                color={Colors[colorScheme ?? 'light'].tint}
+                            />
+                            <ThemedText style={styles.featureText}>
+                                {feature.text}
+                            </ThemedText>
+                        </ThemedView>
+                    ))}
+                </ThemedView>
+
+                <ThemedText type="title" style={styles.pricingSectionTitle}>
+                    {t.laundryDash.pricing.title}
+                </ThemedText>
+
+                <ThemedView style={styles.pricingContainer}>
+                    <PricingCard
+                        tier={t.laundryDash.pricing.basic.name}
+                        price={t.laundryDash.pricing.basic.price}
+                        features={t.laundryDash.pricing.basic.features}
+                        colorScheme={colorScheme}
+                        t={t}
+                    />
+                    <PricingCard
+                        tier={t.laundryDash.pricing.premium.name}
+                        price={t.laundryDash.pricing.premium.price}
+                        features={t.laundryDash.pricing.premium.features}
+                        recommended
+                        colorScheme={colorScheme}
+                        t={t}
+                    />
+                    <PricingCard
+                        tier={t.laundryDash.pricing.express.name}
+                        price={t.laundryDash.pricing.express.price}
+                        features={t.laundryDash.pricing.express.features}
+                        colorScheme={colorScheme}
+                        t={t}
+                    />
+                </ThemedView>
+
+                <ThemedView style={styles.startContainer}>
+                    <ThemedText style={styles.startText}>
+                        {t.laundryDash.startMessage}
+                    </ThemedText>
+                    <BouncingArrow color={Colors[colorScheme ?? 'light'].tint} />
+                </ThemedView>
             </ThemedView>
-        </ThemedView>
+        </ScrollView>
     );
 };
 
@@ -186,7 +265,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        paddingHorizontal: 20,
+        padding: 24,
     },
     logoOptionsContainer: {
         flexDirection: 'row',
@@ -249,5 +328,62 @@ const styles = StyleSheet.create({
     },
     arrowIcon: {
         opacity: 0.8,
+    },
+    scrollView: {
+        flex: 1,
+    },
+    scrollViewContent: {
+        flexGrow: 1,
+    },
+    pricingSectionTitle: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginTop: 40,
+        marginBottom: 24,
+        textAlign: 'center',
+    },
+    pricingContainer: {
+        width: '100%',
+        gap: 16,
+        paddingHorizontal: 16,
+    },
+    pricingCard: {
+        padding: 24,
+        borderRadius: 16,
+        borderWidth: 1,
+        borderColor: 'rgba(0,0,0,0.1)',
+        marginBottom: 16,
+    },
+    recommendedBadge: {
+        position: 'absolute',
+        top: -12,
+        right: 24,
+        paddingHorizontal: 12,
+        paddingVertical: 4,
+        borderRadius: 12,
+    },
+    recommendedText: {
+        color: 'white',
+        fontSize: 12,
+        fontWeight: 'bold',
+    },
+    pricingTier: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginBottom: 8,
+    },
+    pricingPrice: {
+        fontSize: 32,
+        fontWeight: 'bold',
+        marginBottom: 24,
+    },
+    pricingFeature: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 8,
+        marginBottom: 12,
+    },
+    pricingFeatureText: {
+        fontSize: 16,
     },
 });
