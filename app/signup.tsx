@@ -7,6 +7,8 @@ import { ThemedView } from '@/components/ThemedView';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { Ionicons } from '@expo/vector-icons';
+import { getTranslation } from '@/constants/i18n';
+import { useLanguage } from '@/hooks/useLanguage';
 
 const SignupScreen = () => {
     const [email, setEmail] = useState('');
@@ -15,6 +17,8 @@ const SignupScreen = () => {
     const [errors, setErrors] = useState({ email: '', password: '' });
     const [showPassword, setShowPassword] = useState(false);
     const colorScheme = useColorScheme();
+    const { currentLanguage } = useLanguage();
+    const t = getTranslation(currentLanguage);
 
     const validateEmail = (email: string) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -85,22 +89,21 @@ const SignupScreen = () => {
         }
     };
 
-    const isFormValid = email && password && passwordStrength.strength !== 'weak' &&
-        !errors.email && !errors.password;
+    const isFormValid = email && password && !errors.email && !errors.password;
 
     return (
         <>
             <ThemedView style={styles.container}>
                 <ThemedView style={styles.header}>
-                    <ThemedText type="title" style={styles.title}>Create your Account</ThemedText>
+                    <ThemedText type="title" style={styles.title}>{t.signup.createAccount}</ThemedText>
                     <ThemedText style={[styles.subtitle, { color: Colors[colorScheme ?? 'light'].tabIconDefault }]}>
-                        Enter your email and password to sign up
+                        {t.signup.enterEmailAndPassword}
                     </ThemedText>
                 </ThemedView>
 
                 <ThemedView style={styles.form}>
                     <ThemedView style={styles.inputContainer}>
-                        <ThemedText style={styles.label}>Email</ThemedText>
+                        <ThemedText style={styles.label}>{t.signup.email}</ThemedText>
                         <TextInput
                             style={[
                                 styles.input,
@@ -111,7 +114,7 @@ const SignupScreen = () => {
                                         : Colors[colorScheme ?? 'light'].tabIconDefault,
                                 }
                             ]}
-                            placeholder="Enter your email"
+                            placeholder={t.signup.emailPlaceholder}
                             placeholderTextColor={Colors[colorScheme ?? 'light'].tabIconDefault}
                             value={email}
                             onChangeText={(text) => {
@@ -127,7 +130,7 @@ const SignupScreen = () => {
                     </ThemedView>
 
                     <ThemedView style={styles.inputContainer}>
-                        <ThemedText style={styles.label}>Password</ThemedText>
+                        <ThemedText style={styles.label}>{t.signup.password}</ThemedText>
                         <ThemedView style={styles.passwordContainer}>
                             <TextInput
                                 style={[
@@ -139,7 +142,7 @@ const SignupScreen = () => {
                                             : Colors[colorScheme ?? 'light'].tabIconDefault,
                                     }
                                 ]}
-                                placeholder="Enter your password"
+                                placeholder={t.signup.passwordPlaceholder}
                                 placeholderTextColor={Colors[colorScheme ?? 'light'].tabIconDefault}
                                 value={password}
                                 onChangeText={(text) => {
@@ -161,24 +164,7 @@ const SignupScreen = () => {
                         </ThemedView>
                         {errors.password ? (
                             <ThemedText style={styles.errorText}>{errors.password}</ThemedText>
-                        ) : password.length > 0 && (
-                            <ThemedView style={styles.strengthIndicatorContainer}>
-                                <ThemedView
-                                    style={[
-                                        styles.strengthBar,
-                                        {
-                                            width: password.length === 0 ? 0 :
-                                                passwordStrength.strength === 'weak' ? '33%' :
-                                                    passwordStrength.strength === 'medium' ? '66%' : '100%',
-                                            backgroundColor: passwordStrength.color
-                                        }
-                                    ]}
-                                />
-                                <ThemedText style={[styles.strengthText, { color: passwordStrength.color }]}>
-                                    {passwordStrength.message}
-                                </ThemedText>
-                            </ThemedView>
-                        )}
+                        ) : null}
                     </ThemedView>
 
                     <Pressable
@@ -192,15 +178,15 @@ const SignupScreen = () => {
                         {isLoading ? (
                             <ActivityIndicator color="#fff" />
                         ) : (
-                            <ThemedText style={styles.buttonText}>Sign Up</ThemedText>
+                            <ThemedText style={styles.buttonText}>{t.signup.signUp}</ThemedText>
                         )}
                     </Pressable>
 
                     <ThemedView style={styles.footer}>
-                        <ThemedText>Already have an account? </ThemedText>
+                        <ThemedText>{t.signup.alreadyHaveAccount} </ThemedText>
                         <Link href="/login" asChild>
                             <Pressable>
-                                <ThemedText style={styles.link}>Log In</ThemedText>
+                                <ThemedText style={styles.link}>{t.signup.logIn}</ThemedText>
                             </Pressable>
                         </Link>
                     </ThemedView>
@@ -213,25 +199,25 @@ const SignupScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 24,
     },
     header: {
-        marginTop: 40,
+        marginTop: 32,
         marginBottom: 32,
+        alignItems: 'center',
     },
     title: {
         fontSize: 32,
         fontWeight: 'bold',
+        marginBottom: 8,
     },
     subtitle: {
         fontSize: 16,
-        color: '#666',
     },
     form: {
-        gap: 16,
+        padding: 24,
     },
     inputContainer: {
-        gap: 8,
+        marginBottom: 16,
     },
     label: {
         fontSize: 16,
@@ -240,54 +226,9 @@ const styles = StyleSheet.create({
     input: {
         height: 48,
         borderWidth: 1,
-        borderColor: '#ddd',
         borderRadius: 8,
         paddingHorizontal: 16,
         fontSize: 16,
-    },
-    button: {
-        height: 48,
-        backgroundColor: '#3b82f6',
-        borderRadius: 8,
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginTop: 8,
-    },
-    buttonText: {
-        color: '#fff',
-        fontSize: 16,
-        fontWeight: '600',
-    },
-    footer: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        marginTop: 16,
-    },
-    link: {
-        color: '#3b82f6',
-        fontWeight: '600',
-    },
-    strengthIndicatorContainer: {
-        marginTop: 6,
-        gap: 4,
-    },
-    strengthBar: {
-        height: 4,
-        borderRadius: 2,
-        backgroundColor: '#dc2626',
-    },
-    strengthText: {
-        fontSize: 12,
-        alignSelf: 'flex-end',
-    },
-    buttonDisabled: {
-        opacity: 0.5,
-        backgroundColor: '#93c5fd',
-    },
-    errorText: {
-        color: '#dc2626',
-        fontSize: 12,
-        marginTop: 4,
     },
     passwordContainer: {
         flexDirection: 'row',
@@ -308,6 +249,32 @@ const styles = StyleSheet.create({
         height: 48,
         justifyContent: 'center',
         padding: 4,
+    },
+    button: {
+        height: 48,
+        borderRadius: 8,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 8,
+    },
+    buttonText: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: '#fff',
+    },
+    footer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        marginTop: 16,
+    },
+    link: {
+        fontWeight: '600',
+        color: '#007AFF',
+    },
+    errorText: {
+        color: '#dc2626',
+        fontSize: 12,
+        marginTop: 4,
     },
 });
 

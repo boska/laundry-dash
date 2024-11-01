@@ -44,7 +44,6 @@ export default {
         }
     },
     login: {
-        welcomeBack: '歡迎回來！',
         chooseHowToLogin: '選擇您想要的登錄方式',
         continueWithGoogle: '使用 Google 繼續',
         continueWithFacebook: '使用 Facebook 繼續',
@@ -65,13 +64,23 @@ export default {
         loginSuccess: '登錄成功',
         welcomeBack: '歡迎回到洗笑笑！'
     },
+    signup: {
+        createAccount: '創建您的帳戶',
+        enterEmailAndPassword: '輸入您的電子郵件和密碼以註冊',
+        email: '電子郵件',
+        emailPlaceholder: '輸入您的電子郵件',
+        password: '密碼',
+        passwordPlaceholder: '輸入您的密碼',
+        signUp: '註冊',
+        alreadyHaveAccount: '已經有帳戶了？',
+        logIn: '登錄',
+    },
     settings: {
         language: {
             title: '語言',
             english: 'English',
             chinese: '繁體中文'
         },
-
         theme: {
             title: '主題',
             system: '系統',

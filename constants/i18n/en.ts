@@ -63,7 +63,6 @@ export default {
         loginFailed: 'Login Failed',
         loginFailedMessage: 'Invalid email or password. Please try again.',
         loginSuccess: 'Login Successful',
-        welcomeBack: 'Welcome back to LaundryDash!'
     },
     settings: {
         language: {
@@ -77,5 +76,16 @@ export default {
             light: 'Light',
             dark: 'Dark'
         }
+    },
+    signup: {
+        createAccount: 'Create your Account',
+        enterEmailAndPassword: 'Enter your email and password to sign up',
+        email: 'Email',
+        emailPlaceholder: 'Enter your email',
+        password: 'Password',
+        passwordPlaceholder: 'Enter your password',
+        signUp: 'Sign Up',
+        alreadyHaveAccount: 'Already have an account?',
+        logIn: 'Log In',
     }
 }; 
