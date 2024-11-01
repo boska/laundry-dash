@@ -50,7 +50,10 @@ export default {
             chinese: '繁體中文'
         },
         theme: {
-            title: 'Dark Mode'
+            title: 'Theme',
+            system: 'System',
+            light: 'Light',
+            dark: 'Dark'
         }
     }
 }; 

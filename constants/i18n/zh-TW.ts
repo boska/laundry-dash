@@ -49,8 +49,12 @@ export default {
             english: 'English',
             chinese: '繁體中文'
         },
+
         theme: {
-            title: '深色模式'
+            title: '主題',
+            system: '系統',
+            light: '淺色',
+            dark: '深色'
         }
     }
 }; 

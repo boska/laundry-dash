@@ -39,7 +39,7 @@ function NavigationContent() {
             name="login"
             options={{
               headerShown: true,
-              title: 'Login',
+              title: '',
               drawerLabel: 'Login'
             }}
           />

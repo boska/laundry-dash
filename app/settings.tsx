@@ -1,7 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
-import { ThemeToggle } from '@/components/ThemeToggle';
 import { useTheme } from '../ctx/ThemeContext';
 import { useLanguage } from '@/hooks/useLanguage';
 import { Ionicons } from '@expo/vector-icons';
@@ -10,9 +9,15 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { getTranslation } from '@/constants/i18n';
 
 export default function SettingsScreen() {
-  const { theme } = useTheme();
+  const { theme, themeMode, setThemeMode } = useTheme();
   const { currentLanguage, changeLanguage } = useLanguage();
   const t = getTranslation(currentLanguage);
+
+  const themeOptions: { label: string; value: 'system' | 'light' | 'dark' }[] = [
+    { label: t.settings.theme.system, value: 'system' },
+    { label: t.settings.theme.light, value: 'light' },
+    { label: t.settings.theme.dark, value: 'dark' },
+  ];
 
   return (
     <ThemedView style={styles.container}>
@@ -48,20 +53,30 @@ export default function SettingsScreen() {
         </TouchableOpacity>
 
         {/* Theme Setting */}
-        <ThemedView style={styles.listItem}>
-          <ThemedView style={styles.itemContent}>
-            <Ionicons
-              name="moon"
-              size={22}
-              color={Colors[theme ?? 'light'].text}
-              style={styles.icon}
-            />
-            <ThemedText style={styles.itemLabel}>
-              {t.settings.theme.title}
-            </ThemedText>
-          </ThemedView>
-          <ThemeToggle />
-        </ThemedView>
+        {themeOptions.map((option) => (
+          <TouchableOpacity
+            key={option.value}
+            style={styles.listItem}
+            onPress={() => setThemeMode(option.value)}
+          >
+            <ThemedView style={styles.itemContent}>
+              <Ionicons
+                name={option.value === 'system' ? 'phone-portrait' : option.value === 'light' ? 'sunny' : 'moon'}
+                size={22}
+                color={Colors[theme ?? 'light'].text}
+                style={styles.icon}
+              />
+              <ThemedText style={styles.itemLabel}>{option.label}</ThemedText>
+            </ThemedView>
+            {themeMode === option.value && (
+              <Ionicons
+                name="checkmark"
+                size={22}
+                color={Colors[theme ?? 'light'].tint}
+              />
+            )}
+          </TouchableOpacity>
+        ))}
       </ThemedView>
     </ThemedView>
   );
