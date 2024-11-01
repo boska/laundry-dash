@@ -42,5 +42,15 @@ export default {
             }
         },
         startMessage: 'Start your laundry service today'
+    },
+    settings: {
+        language: {
+            title: 'Language',
+            english: 'English',
+            chinese: '繁體中文'
+        },
+        theme: {
+            title: 'Dark Mode'
+        }
     }
 }; 

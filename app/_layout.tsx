@@ -24,13 +24,7 @@ function NavigationContent() {
           screenOptions={({ route }) => ({
             drawerItemStyle: {
               display: ['(tabs)', 'login', 'settings'].includes(route.name) ? 'flex' : 'none'
-            },
-            headerRight: () => (
-              <View style={styles.headerRight}>
-                <LanguageSelector />
-                <ThemeToggle />
-              </View>
-            )
+            }
           })}
         >
           <Drawer.Screen
@@ -50,11 +44,11 @@ function NavigationContent() {
             }}
           />
           <Drawer.Screen
-            name="signup"
+            name="settings"
             options={{
               headerShown: true,
-              title: 'Sign Up',
-              drawerLabel: 'Sign Up'
+              title: 'Settings',
+              drawerLabel: 'Settings'
             }}
           />
           <Drawer.Screen

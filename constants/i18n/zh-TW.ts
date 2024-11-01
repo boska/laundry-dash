@@ -42,5 +42,15 @@ export default {
                 ]
             }
         }
+    },
+    settings: {
+        language: {
+            title: '語言',
+            english: 'English',
+            chinese: '繁體中文'
+        },
+        theme: {
+            title: '深色模式'
+        }
     }
 }; 

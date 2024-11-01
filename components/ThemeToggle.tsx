@@ -1,25 +1,20 @@
-import { TouchableOpacity } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons';
+import { Switch } from 'react-native';
 import { useTheme } from '../ctx/ThemeContext';
 import { Colors } from '@/constants/Colors';
 
 export function ThemeToggle() {
     const { theme, setTheme } = useTheme();
 
-    const toggleTheme = () => {
-        setTheme(theme === 'light' ? 'dark' : 'light');
-    };
-
     return (
-        <TouchableOpacity
-            style={{ padding: 8 }}
-            onPress={toggleTheme}
-        >
-            {theme === 'dark' ? (
-                <FontAwesome name="sun-o" size={24} color={Colors[theme ?? 'light'].text} />
-            ) : (
-                <FontAwesome name="moon-o" size={24} color={Colors[theme ?? 'light'].text} />
-            )}
-        </TouchableOpacity>
+        <Switch
+            value={theme === 'dark'}
+            onValueChange={(value) => setTheme(value ? 'dark' : 'light')}
+            trackColor={{
+                false: '#767577',
+                true: Colors[theme ?? 'light'].tint + '20',
+            }}
+            thumbColor={theme === 'dark' ? Colors[theme].tint : '#f4f3f4'}
+            ios_backgroundColor="#767577"
+        />
     );
 } 
