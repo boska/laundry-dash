@@ -1,8 +1,8 @@
-import { TextInput, StyleSheet, Pressable, ActivityIndicator, Image } from 'react-native';
+import { TextInput, StyleSheet, Pressable, ActivityIndicator, Image, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { useState } from 'react';
-import { Link, router } from 'expo-router';
+import { router } from 'expo-router';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { Ionicons } from '@expo/vector-icons';
@@ -61,138 +61,157 @@ const LoginScreen = () => {
     const isFormValid = email && password && !errors.email && !errors.password;
 
     return (
-        <ThemedView style={styles.container}>
-            <ThemedView style={styles.header}>
-                <ThemedText type="title" style={styles.title}>Ohahhaha!</ThemedText>
-                <ThemedText style={[styles.subtitle, { color: Colors[colorScheme ?? 'light'].tabIconDefault }]}>
-                    Enter your email and password to log in
-                </ThemedText>
-            </ThemedView>
-
-            <ThemedView style={styles.form}>
-                <ThemedView style={styles.inputContainer}>
-                    <ThemedText style={styles.label}>Email</ThemedText>
-                    <TextInput
-                        style={[
-                            styles.input,
-                            {
-                                color: Colors[colorScheme ?? 'light'].text,
-                                borderColor: errors.email
-                                    ? '#dc2626'
-                                    : Colors[colorScheme ?? 'light'].tabIconDefault,
-                            }
-                        ]}
-                        value={email}
-                        onChangeText={(text) => {
-                            setEmail(text);
-                            if (errors.email) setErrors(prev => ({ ...prev, email: '' }));
-                        }}
-                        placeholder="Enter your email"
-                        placeholderTextColor={Colors[colorScheme ?? 'light'].tabIconDefault}
-                        autoCapitalize="none"
-                        keyboardType="email-address"
-                    />
-                    {errors.email ? (
-                        <ThemedText style={styles.errorText}>{errors.email}</ThemedText>
-                    ) : null}
-                </ThemedView>
-
-                <ThemedView style={styles.inputContainer}>
-                    <ThemedText style={styles.label}>Password</ThemedText>
-                    <ThemedView style={styles.passwordContainer}>
-                        <TextInput
-                            style={[
-                                styles.passwordInput,
-                                {
-                                    color: Colors[colorScheme ?? 'light'].text,
-                                    borderColor: errors.password
-                                        ? '#dc2626'
-                                        : Colors[colorScheme ?? 'light'].tabIconDefault,
-                                }
-                            ]}
-                            value={password}
-                            onChangeText={(text) => {
-                                setPassword(text);
-                                if (errors.password) setErrors(prev => ({ ...prev, password: '' }));
-                            }}
-                            placeholder="Enter your password"
-                            placeholderTextColor={Colors[colorScheme ?? 'light'].tabIconDefault}
-                            secureTextEntry={!showPassword}
-                        />
-                        <Pressable
-                            style={styles.eyeButton}
-                            onPress={() => setShowPassword(!showPassword)}
-                        >
-                            <Ionicons
-                                name={showPassword ? 'eye-off' : 'eye'}
-                                size={24}
-                                color={Colors[colorScheme ?? 'light'].tabIconDefault}
-                            />
-                        </Pressable>
+        <KeyboardAvoidingView
+            style={styles.container}
+            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        >
+            <ScrollView
+                contentContainerStyle={styles.scrollContent}
+                showsVerticalScrollIndicator={false}
+                keyboardShouldPersistTaps="handled"
+            >
+                <ThemedView style={styles.formContainer}>
+                    <ThemedView style={styles.header}>
+                        <ThemedText style={styles.title}>Welcome back!</ThemedText>
+                        <ThemedText style={[styles.subtitle]}>
+                            Enter your email and password to log in
+                        </ThemedText>
                     </ThemedView>
-                    {errors.password && (
-                        <ThemedText style={styles.errorText}>{errors.password}</ThemedText>
-                    )}
+
+                    <ThemedView style={styles.form}>
+                        <ThemedView style={styles.inputContainer}>
+                            <ThemedText style={styles.label}>Email</ThemedText>
+                            <TextInput
+                                style={[
+                                    styles.input,
+                                    {
+                                        color: Colors[colorScheme ?? 'light'].text,
+                                        backgroundColor: Colors[colorScheme ?? 'light'].inputBackground,
+                                        borderColor: errors.email
+                                            ? '#dc2626'
+                                            : Colors[colorScheme ?? 'light'].border,
+                                    }
+                                ]}
+                                value={email}
+                                onChangeText={(text) => {
+                                    setEmail(text);
+                                    if (errors.email) setErrors(prev => ({ ...prev, email: '' }));
+                                }}
+                                placeholder="Enter your email"
+                                placeholderTextColor={Colors[colorScheme ?? 'light'].tabIconDefault}
+                                autoCapitalize="none"
+                                keyboardType="email-address"
+                            />
+                            {errors.email ? (
+                                <ThemedText style={styles.errorText}>{errors.email}</ThemedText>
+                            ) : null}
+                        </ThemedView>
+
+                        <ThemedView style={styles.inputContainer}>
+                            <ThemedText style={styles.label}>Password</ThemedText>
+                            <ThemedView style={styles.passwordContainer}>
+                                <TextInput
+                                    style={[
+                                        styles.passwordInput,
+                                        {
+                                            color: Colors[colorScheme ?? 'light'].text,
+                                            backgroundColor: Colors[colorScheme ?? 'light'].inputBackground,
+                                            borderColor: errors.password
+                                                ? '#dc2626'
+                                                : Colors[colorScheme ?? 'light'].border,
+                                        }
+                                    ]}
+                                    value={password}
+                                    onChangeText={(text) => {
+                                        setPassword(text);
+                                        if (errors.password) setErrors(prev => ({ ...prev, password: '' }));
+                                    }}
+                                    placeholder="Enter your password"
+                                    placeholderTextColor={Colors[colorScheme ?? 'light'].tabIconDefault}
+                                    secureTextEntry={!showPassword}
+                                />
+                                <Pressable
+                                    style={styles.eyeButton}
+                                    onPress={() => setShowPassword(!showPassword)}
+                                >
+                                    <Ionicons
+                                        name={showPassword ? 'eye-off' : 'eye'}
+                                        size={24}
+                                        color={Colors[colorScheme ?? 'light'].tabIconDefault}
+                                    />
+                                </Pressable>
+                            </ThemedView>
+                            {errors.password && (
+                                <ThemedText style={styles.errorText}>{errors.password}</ThemedText>
+                            )}
+                        </ThemedView>
+
+                        <Pressable
+                            style={styles.forgotPassword}
+                            onPress={() => router.push('/')}
+                        >
+                            <ThemedText style={styles.link}>Forgot Password?</ThemedText>
+                        </Pressable>
+
+                        <Pressable
+                            style={[
+                                styles.button,
+                                (!isFormValid || isLoading) && styles.buttonDisabled
+                            ]}
+                            onPress={handleLogin}
+                            disabled={!isFormValid || isLoading}
+                        >
+                            {isLoading ? (
+                                <ActivityIndicator color="#fff" />
+                            ) : (
+                                <ThemedText style={styles.buttonText}>Log In</ThemedText>
+                            )}
+                        </Pressable>
+
+                        <ThemedText style={styles.orText}>Or</ThemedText>
+
+                        <Pressable style={styles.socialButton}>
+                            <Image
+                                source={require('@/assets/images/google.png')}
+                                style={styles.socialIcon}
+                            />
+                            <ThemedText style={styles.socialButtonText}>Continue with Google</ThemedText>
+                        </Pressable>
+
+                        <Pressable style={styles.socialButton}>
+                            <Image
+                                source={require('@/assets/images/facebook.png')}
+                                style={styles.socialIcon}
+                            />
+                            <ThemedText style={styles.socialButtonText}>Continue with Facebook</ThemedText>
+                        </Pressable>
+
+                        <ThemedView style={styles.footer}>
+                            <ThemedText>Don't have an account? </ThemedText>
+                            <Pressable onPress={() => router.push('/signup')}>
+                                <ThemedText style={styles.link}>Sign Up</ThemedText>
+                            </Pressable>
+                        </ThemedView>
+                    </ThemedView>
                 </ThemedView>
-
-                <Pressable
-                    style={styles.forgotPassword}
-                    onPress={() => router.push('/avatar')}
-                >
-                    <ThemedText style={styles.link}>Forgot Password?</ThemedText>
-                </Pressable>
-
-                <Pressable
-                    style={[
-                        styles.button,
-                        (!isFormValid || isLoading) && styles.buttonDisabled
-                    ]}
-                    onPress={handleLogin}
-                    disabled={!isFormValid || isLoading}
-                >
-                    {isLoading ? (
-                        <ActivityIndicator color="#fff" />
-                    ) : (
-                        <ThemedText style={styles.buttonText}>Log In</ThemedText>
-                    )}
-                </Pressable>
-
-                <ThemedText style={styles.orText}>Or</ThemedText>
-
-                <Pressable style={styles.socialButton}>
-                    <Image
-                        source={require('@/assets/images/google.png')}
-                        style={styles.socialIcon}
-                    />
-                    <ThemedText style={styles.socialButtonText}>Continue with Google</ThemedText>
-                </Pressable>
-
-                <Pressable style={styles.socialButton}>
-                    <Image
-                        source={require('@/assets/images/facebook.png')}
-                        style={styles.socialIcon}
-                    />
-                    <ThemedText style={styles.socialButtonText}>Continue with Facebook</ThemedText>
-                </Pressable>
-
-                <ThemedView style={styles.footer}>
-                    <ThemedText>Don't have an account? </ThemedText>
-                    <Pressable onPress={() => router.push('/(tabs)/signup')}>
-                        <ThemedText style={styles.link}>Sign Up</ThemedText>
-                    </Pressable>
-                </ThemedView>
-            </ThemedView>
-        </ThemedView>
+            </ScrollView>
+        </KeyboardAvoidingView>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+    },
+    scrollContent: {
+        flexGrow: 1,
+    },
+    formContainer: {
+        flex: 1,
         padding: 24,
     },
     header: {
-        marginTop: 40,
+        marginTop: 32,
         marginBottom: 32,
     },
     title: {
