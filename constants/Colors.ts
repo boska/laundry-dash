@@ -27,25 +27,49 @@ const adjustBrightness = (hex: string, percent: number) => {
 };
 
 
-const brandColor = '#009dff';  // Main brand color
-const brandColorDark = adjustBrightness(brandColor, 0.4);  // 40% brighter for dark mode
+const brandColor = '#0059ff';
+const errorColor = '#dc2626';
 
 export const Colors = {
   light: {
     text: '#11181C',
     background: '#fff',
     tint: brandColor,
-    icon: '#687076',
     tabIconDefault: '#687076',
-    tabIconSelected: brandColorDark,
+    tabIconSelected: brandColor,
+    // Add semantic colors
+    border: '#E5E7EB',
+    cardBackground: '#FFFFFF',
+    inputBackground: '#F9FAFB',
+    error: errorColor,
+    primary: {
+      main: brandColor,
+      disabled: '#93c5fd',
+      text: '#FFFFFF',
+    },
+    secondary: {
+      text: '#687076',  // same as tabIconDefault for consistency
+    }
   },
   dark: {
     text: '#ECEDEE',
     background: '#151718',
     tint: brandColor,
-    icon: '#9BA1A6',
     tabIconDefault: '#9BA1A6',
-    tabIconSelected: brandColorDark,
+    tabIconSelected: brandColor,
+    // Add semantic colors
+    border: '#374151',
+    cardBackground: '#1F2937',
+    inputBackground: '#1F2937',
+    error: errorColor,
+    primary: {
+      main: brandColor,
+      disabled: '#1D4ED8',
+      text: '#FFFFFF',
+    },
+    secondary: {
+      text: '#9BA1A6',  // same as tabIconDefault for consistency
+    }
   },
 };
 

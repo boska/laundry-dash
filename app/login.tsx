@@ -14,6 +14,7 @@ const LoginScreen = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const colorScheme = useColorScheme();
+    const theme = Colors[colorScheme ?? 'light'];
 
     const validateEmail = (email: string) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -62,20 +63,52 @@ const LoginScreen = () => {
 
     return (
         <KeyboardAvoidingView
-            style={styles.container}
+            style={[styles.container, { backgroundColor: theme.background }]}
             behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         >
             <ScrollView
-                contentContainerStyle={styles.scrollContent}
+                contentContainerStyle={[styles.scrollContent, { backgroundColor: theme.background }]}
                 showsVerticalScrollIndicator={false}
                 keyboardShouldPersistTaps="handled"
             >
                 <ThemedView style={styles.formContainer}>
                     <ThemedView style={styles.header}>
                         <ThemedText style={styles.title}>Welcome back!</ThemedText>
-                        <ThemedText style={[styles.subtitle]}>
-                            Enter your email and password to log in
+                        <ThemedText style={[styles.subtitle, { color: theme.secondary.text }]}>
+                            Choose how you want to log in
                         </ThemedText>
+                    </ThemedView>
+
+                    <ThemedView style={styles.socialButtonsContainer}>
+                        <Pressable style={[styles.socialButton, {
+                            backgroundColor: theme.cardBackground,
+                            borderColor: theme.border
+                        }]}>
+                            <Image
+                                source={require('@/assets/images/google.png')}
+                                style={styles.socialIcon}
+                            />
+                            <ThemedText style={styles.socialButtonText}>Continue with Google</ThemedText>
+                        </Pressable>
+
+                        <Pressable style={[styles.socialButton, {
+                            backgroundColor: theme.cardBackground,
+                            borderColor: theme.border
+                        }]}>
+                            <Image
+                                source={require('@/assets/images/facebook.png')}
+                                style={styles.socialIcon}
+                            />
+                            <ThemedText style={styles.socialButtonText}>Continue with Facebook</ThemedText>
+                        </Pressable>
+                    </ThemedView>
+
+                    <ThemedView style={styles.dividerContainer}>
+                        <ThemedView style={[styles.divider, { backgroundColor: theme.border }]} />
+                        <ThemedText style={[styles.orText, { color: theme.secondary.text }]}>
+                            Or continue with email
+                        </ThemedText>
+                        <ThemedView style={[styles.divider, { backgroundColor: theme.border }]} />
                     </ThemedView>
 
                     <ThemedView style={styles.form}>
@@ -85,11 +118,9 @@ const LoginScreen = () => {
                                 style={[
                                     styles.input,
                                     {
-                                        color: Colors[colorScheme ?? 'light'].text,
-                                        backgroundColor: Colors[colorScheme ?? 'light'].inputBackground,
-                                        borderColor: errors.email
-                                            ? '#dc2626'
-                                            : Colors[colorScheme ?? 'light'].border,
+                                        color: theme.text,
+                                        backgroundColor: theme.inputBackground,
+                                        borderColor: errors.email ? theme.error : theme.border,
                                     }
                                 ]}
                                 value={email}
@@ -98,7 +129,7 @@ const LoginScreen = () => {
                                     if (errors.email) setErrors(prev => ({ ...prev, email: '' }));
                                 }}
                                 placeholder="Enter your email"
-                                placeholderTextColor={Colors[colorScheme ?? 'light'].tabIconDefault}
+                                placeholderTextColor={theme.secondary.text}
                                 autoCapitalize="none"
                                 keyboardType="email-address"
                             />
@@ -114,11 +145,11 @@ const LoginScreen = () => {
                                     style={[
                                         styles.passwordInput,
                                         {
-                                            color: Colors[colorScheme ?? 'light'].text,
-                                            backgroundColor: Colors[colorScheme ?? 'light'].inputBackground,
+                                            color: theme.text,
+                                            backgroundColor: theme.inputBackground,
                                             borderColor: errors.password
-                                                ? '#dc2626'
-                                                : Colors[colorScheme ?? 'light'].border,
+                                                ? theme.error
+                                                : theme.border,
                                         }
                                     ]}
                                     value={password}
@@ -127,7 +158,7 @@ const LoginScreen = () => {
                                         if (errors.password) setErrors(prev => ({ ...prev, password: '' }));
                                     }}
                                     placeholder="Enter your password"
-                                    placeholderTextColor={Colors[colorScheme ?? 'light'].tabIconDefault}
+                                    placeholderTextColor={theme.secondary.text}
                                     secureTextEntry={!showPassword}
                                 />
                                 <Pressable
@@ -137,7 +168,7 @@ const LoginScreen = () => {
                                     <Ionicons
                                         name={showPassword ? 'eye-off' : 'eye'}
                                         size={24}
-                                        color={Colors[colorScheme ?? 'light'].tabIconDefault}
+                                        color={theme.secondary.text}
                                     />
                                 </Pressable>
                             </ThemedView>
@@ -150,48 +181,43 @@ const LoginScreen = () => {
                             style={styles.forgotPassword}
                             onPress={() => router.push('/')}
                         >
-                            <ThemedText style={styles.link}>Forgot Password?</ThemedText>
+                            <ThemedText style={[styles.link, { color: theme.tint }]}>
+                                Forgot Password?
+                            </ThemedText>
                         </Pressable>
 
                         <Pressable
                             style={[
                                 styles.button,
-                                (!isFormValid || isLoading) && styles.buttonDisabled
+                                { backgroundColor: theme.tint },
+                                (!isFormValid || isLoading) && {
+                                    opacity: 0.5
+                                }
                             ]}
                             onPress={handleLogin}
                             disabled={!isFormValid || isLoading}
                         >
                             {isLoading ? (
-                                <ActivityIndicator color="#fff" />
+                                <ActivityIndicator color={theme.background} />
                             ) : (
-                                <ThemedText style={styles.buttonText}>Log In</ThemedText>
+                                <ThemedText style={[styles.buttonText, {
+                                    color: theme.background
+                                }]}>
+                                    Log In
+                                </ThemedText>
                             )}
                         </Pressable>
+                    </ThemedView>
 
-                        <ThemedText style={styles.orText}>Or</ThemedText>
-
-                        <Pressable style={styles.socialButton}>
-                            <Image
-                                source={require('@/assets/images/google.png')}
-                                style={styles.socialIcon}
-                            />
-                            <ThemedText style={styles.socialButtonText}>Continue with Google</ThemedText>
+                    <ThemedView style={styles.footer}>
+                        <ThemedText style={{ color: theme.text }}>
+                            Don't have an account?{' '}
+                        </ThemedText>
+                        <Pressable onPress={() => router.push('/signup')}>
+                            <ThemedText style={[styles.link, { color: theme.tint }]}>
+                                Sign Up
+                            </ThemedText>
                         </Pressable>
-
-                        <Pressable style={styles.socialButton}>
-                            <Image
-                                source={require('@/assets/images/facebook.png')}
-                                style={styles.socialIcon}
-                            />
-                            <ThemedText style={styles.socialButtonText}>Continue with Facebook</ThemedText>
-                        </Pressable>
-
-                        <ThemedView style={styles.footer}>
-                            <ThemedText>Don't have an account? </ThemedText>
-                            <Pressable onPress={() => router.push('/signup')}>
-                                <ThemedText style={styles.link}>Sign Up</ThemedText>
-                            </Pressable>
-                        </ThemedView>
                     </ThemedView>
                 </ThemedView>
             </ScrollView>
@@ -213,14 +239,50 @@ const styles = StyleSheet.create({
     header: {
         marginTop: 32,
         marginBottom: 32,
+        alignItems: 'center',
     },
     title: {
         fontSize: 32,
         fontWeight: 'bold',
+        marginBottom: 8,
     },
     subtitle: {
         fontSize: 16,
-        color: '#666',
+    },
+    socialButtonsContainer: {
+        gap: 16,
+        marginBottom: 32,
+    },
+    socialButton: {
+        height: 48,
+        borderRadius: 8,
+        borderWidth: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'row',
+        paddingHorizontal: 16,
+    },
+    socialIcon: {
+        width: 24,
+        height: 24,
+        marginRight: 12,
+    },
+    socialButtonText: {
+        fontSize: 16,
+        fontWeight: '500',
+    },
+    dividerContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 32,
+        gap: 16,
+    },
+    divider: {
+        flex: 1,
+        height: 1,
+    },
+    orText: {
+        fontSize: 14,
     },
     form: {
         gap: 16,
@@ -265,44 +327,14 @@ const styles = StyleSheet.create({
     },
     button: {
         height: 48,
-        backgroundColor: '#3b82f6',
         borderRadius: 8,
         alignItems: 'center',
         justifyContent: 'center',
         marginTop: 8,
     },
-    buttonDisabled: {
-        opacity: 0.5,
-        backgroundColor: '#93c5fd',
-    },
     buttonText: {
-        color: '#fff',
         fontSize: 16,
         fontWeight: '600',
-    },
-    orText: {
-        textAlign: 'center',
-        marginVertical: 16,
-        color: '#6B7280',
-    },
-    socialButton: {
-        height: 48,
-        borderRadius: 8,
-        borderWidth: 1,
-        borderColor: '#E5E7EB',
-        justifyContent: 'center',
-        alignItems: 'center',
-        flexDirection: 'row',
-        paddingHorizontal: 16,
-        marginBottom: 16,
-    },
-    socialIcon: {
-        width: 24,
-        height: 24,
-        marginRight: 12,
-    },
-    socialButtonText: {
-        fontSize: 16,
     },
     footer: {
         flexDirection: 'row',
@@ -310,7 +342,6 @@ const styles = StyleSheet.create({
         marginTop: 16,
     },
     link: {
-        color: '#3b82f6',
         fontWeight: '600',
     },
     errorText: {
