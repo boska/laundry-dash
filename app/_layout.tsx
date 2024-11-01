@@ -9,8 +9,6 @@ import { store } from '../store/store';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Drawer } from 'expo-router/drawer';
-import { LanguageSelector } from '@/components/LanguageSelector';
-import { View } from 'react-native';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -34,7 +32,13 @@ export default function RootLayout() {
     <Provider store={store}>
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <GestureHandlerRootView style={{ flex: 1 }}>
-          <Drawer>
+          <Drawer
+            screenOptions={({ route }) => ({
+              drawerItemStyle: {
+                display: ['(tabs)', 'login'].includes(route.name) ? 'flex' : 'none'
+              }
+            })}
+          >
             <Drawer.Screen
               name="(tabs)"
               options={{
