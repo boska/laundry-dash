@@ -43,6 +43,28 @@ export default {
         },
         startMessage: 'Start your laundry service today'
     },
+    login: {
+        welcomeBack: 'Welcome back!',
+        chooseHowToLogin: 'Choose how you want to log in',
+        continueWithGoogle: 'Continue with Google',
+        continueWithFacebook: 'Continue with Facebook',
+        orContinueWithEmail: 'Or continue with email',
+        email: 'Email',
+        emailPlaceholder: 'Enter your email',
+        password: 'Password',
+        passwordPlaceholder: 'Enter your password',
+        forgotPassword: 'Forgot Password?',
+        logIn: 'Log In',
+        noAccount: "Don't have an account?",
+        signUp: 'Sign Up',
+        emailRequired: 'Email is required',
+        invalidEmail: 'Please enter a valid email',
+        passwordRequired: 'Password is required',
+        loginFailed: 'Login Failed',
+        loginFailedMessage: 'Invalid email or password. Please try again.',
+        loginSuccess: 'Login Successful',
+        welcomeBack: 'Welcome back to LaundryDash!'
+    },
     settings: {
         language: {
             title: 'Language',

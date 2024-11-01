@@ -43,6 +43,28 @@ export default {
             }
         }
     },
+    login: {
+        welcomeBack: '歡迎回來！',
+        chooseHowToLogin: '選擇您想要的登錄方式',
+        continueWithGoogle: '使用 Google 繼續',
+        continueWithFacebook: '使用 Facebook 繼續',
+        orContinueWithEmail: '或使用電子郵件繼續',
+        email: '電子郵件',
+        emailPlaceholder: '輸入您的電子郵件',
+        password: '密碼',
+        passwordPlaceholder: '輸入您的密碼',
+        forgotPassword: '忘記密碼？',
+        logIn: '登錄',
+        noAccount: '還沒有帳戶？',
+        signUp: '註冊',
+        emailRequired: '電子郵件是必需的',
+        invalidEmail: '請輸入有效的電子郵件',
+        passwordRequired: '密碼是必需的',
+        loginFailed: '登錄失敗',
+        loginFailedMessage: '無效的電子郵件或密碼。請再試一次。',
+        loginSuccess: '登錄成功',
+        welcomeBack: '歡迎回到洗笑笑！'
+    },
     settings: {
         language: {
             title: '語言',

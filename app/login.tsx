@@ -7,6 +7,8 @@ import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { Ionicons } from '@expo/vector-icons';
 import Toast from 'react-native-toast-message';
+import { getTranslation } from '@/constants/i18n';
+import { useLanguage } from '@/hooks/useLanguage';
 
 const createToastConfig = (colorScheme: string) => ({
     error: (props: any) => (
@@ -93,6 +95,8 @@ const LoginScreen = () => {
     const [showPassword, setShowPassword] = useState(false);
     const colorScheme = useColorScheme();
     const theme = Colors[colorScheme ?? 'light'];
+    const { currentLanguage } = useLanguage();
+    const t = getTranslation(currentLanguage);
 
     const validateEmail = (email: string) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -104,15 +108,15 @@ const LoginScreen = () => {
         let isValid = true;
 
         if (!email) {
-            newErrors.email = 'Email is required';
+            newErrors.email = t.login.emailRequired;
             isValid = false;
         } else if (!validateEmail(email)) {
-            newErrors.email = 'Please enter a valid email';
+            newErrors.email = t.login.invalidEmail;
             isValid = false;
         }
 
         if (!password) {
-            newErrors.password = 'Password is required';
+            newErrors.password = t.login.passwordRequired;
             isValid = false;
         }
 
@@ -129,8 +133,8 @@ const LoginScreen = () => {
             await new Promise(resolve => setTimeout(resolve, 1000));
             Toast.show({
                 type: 'error',
-                text1: 'Login Failed',
-                text2: 'Invalid email or password. Please try again.',
+                text1: t.login.loginFailed,
+                text2: t.login.loginFailedMessage,
                 position: 'bottom',
                 visibilityTime: 3000,
             });
@@ -145,8 +149,8 @@ const LoginScreen = () => {
             await new Promise(resolve => setTimeout(resolve, 1000));
             Toast.show({
                 type: 'success',
-                text1: `${provider} Login Successful`,
-                text2: 'Welcome back to LaundryDash!',
+                text1: t.login.loginSuccess + provider,
+                text2: t.login.welcomeBack,
                 position: 'bottom',
                 visibilityTime: 3000,
             });
@@ -171,9 +175,9 @@ const LoginScreen = () => {
             >
                 <ThemedView style={styles.formContainer}>
                     <ThemedView style={styles.header}>
-                        <ThemedText style={styles.title}>Welcome back!</ThemedText>
+                        <ThemedText style={styles.title}>{t.login.welcomeBack}</ThemedText>
                         <ThemedText style={[styles.subtitle, { color: theme.secondary.text }]}>
-                            Choose how you want to log in
+                            {t.login.chooseHowToLogin}
                         </ThemedText>
                     </ThemedView>
 
@@ -191,7 +195,7 @@ const LoginScreen = () => {
                                 style={styles.socialIcon}
                             />
                             <ThemedText style={styles.socialButtonText}>
-                                Continue with Google
+                                {t.login.continueWithGoogle}
                             </ThemedText>
                         </Pressable>
 
@@ -208,7 +212,7 @@ const LoginScreen = () => {
                                 style={styles.socialIcon}
                             />
                             <ThemedText style={styles.socialButtonText}>
-                                Continue with Facebook
+                                {t.login.continueWithFacebook}
                             </ThemedText>
                         </Pressable>
                     </ThemedView>
@@ -216,14 +220,14 @@ const LoginScreen = () => {
                     <ThemedView style={styles.dividerContainer}>
                         <ThemedView style={[styles.divider, { backgroundColor: theme.border }]} />
                         <ThemedText style={[styles.orText, { color: theme.secondary.text }]}>
-                            Or continue with email
+                            {t.login.orContinueWithEmail}
                         </ThemedText>
                         <ThemedView style={[styles.divider, { backgroundColor: theme.border }]} />
                     </ThemedView>
 
                     <ThemedView style={styles.form}>
                         <ThemedView style={styles.inputContainer}>
-                            <ThemedText style={styles.label}>Email</ThemedText>
+                            <ThemedText style={styles.label}>{t.login.email}</ThemedText>
                             <TextInput
                                 style={[
                                     styles.input,
@@ -238,7 +242,7 @@ const LoginScreen = () => {
                                     setEmail(text);
                                     if (errors.email) setErrors(prev => ({ ...prev, email: '' }));
                                 }}
-                                placeholder="Enter your email"
+                                placeholder={t.login.emailPlaceholder}
                                 placeholderTextColor={theme.secondary.text}
                                 autoCapitalize="none"
                                 keyboardType="email-address"
@@ -249,7 +253,7 @@ const LoginScreen = () => {
                         </ThemedView>
 
                         <ThemedView style={styles.inputContainer}>
-                            <ThemedText style={styles.label}>Password</ThemedText>
+                            <ThemedText style={styles.label}>{t.login.password}</ThemedText>
                             <ThemedView style={styles.passwordContainer}>
                                 <TextInput
                                     style={[
@@ -267,7 +271,7 @@ const LoginScreen = () => {
                                         setPassword(text);
                                         if (errors.password) setErrors(prev => ({ ...prev, password: '' }));
                                     }}
-                                    placeholder="Enter your password"
+                                    placeholder={t.login.passwordPlaceholder}
                                     placeholderTextColor={theme.secondary.text}
                                     secureTextEntry={!showPassword}
                                 />
@@ -292,7 +296,7 @@ const LoginScreen = () => {
                             onPress={() => router.push('/')}
                         >
                             <ThemedText style={[styles.link, { color: theme.tint }]}>
-                                Forgot Password?
+                                {t.login.forgotPassword}
                             </ThemedText>
                         </Pressable>
 
@@ -313,7 +317,7 @@ const LoginScreen = () => {
                                 <ThemedText style={[styles.buttonText, {
                                     color: theme.background
                                 }]}>
-                                    Log In
+                                    {t.login.logIn}
                                 </ThemedText>
                             )}
                         </Pressable>
@@ -321,11 +325,11 @@ const LoginScreen = () => {
 
                     <ThemedView style={styles.footer}>
                         <ThemedText style={{ color: theme.text }}>
-                            Don't have an account?{' '}
+                            {t.login.noAccount}{' '}
                         </ThemedText>
                         <Pressable onPress={() => router.push('/signup')}>
                             <ThemedText style={[styles.link, { color: theme.tint }]}>
-                                Sign Up
+                                {t.login.signUp}
                             </ThemedText>
                         </Pressable>
                     </ThemedView>
