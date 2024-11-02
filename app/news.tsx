@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { StyleSheet, FlatList, ActivityIndicator, RefreshControl, Image } from 'react-native';
+import Markdown from 'react-native-markdown-display';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { Colors } from '@/constants/Colors';
@@ -112,6 +113,31 @@ export default function NewsScreen() {
 
     const renderCommitItem = ({ item }: { item: Commit }) => {
         const relativeTime = getRelativeTime(item.commit.author.date);
+        const markdownStyles = {
+            body: {
+                color: Colors[theme ?? 'light'].text,
+                fontSize: 16,
+                lineHeight: 22,
+                fontWeight: '500',
+            },
+            link: {
+                color: Colors[theme ?? 'light'].tint,
+            },
+            code_inline: {
+                backgroundColor: Colors[theme ?? 'light'].inputBackground,
+                padding: 4,
+                borderRadius: 4,
+            },
+            code_block: {
+                backgroundColor: Colors[theme ?? 'light'].inputBackground,
+                padding: 8,
+                borderRadius: 8,
+                marginVertical: 8,
+            },
+            bullet_list: {
+                marginVertical: 8,
+            },
+        };
 
         return (
             <ThemedView
@@ -132,7 +158,11 @@ export default function NewsScreen() {
                         <ThemedText style={styles.timeAgo}>{relativeTime}</ThemedText>
                     </ThemedView>
                 </ThemedView>
-                <ThemedText style={styles.commitMessage}>{item.commit.message}</ThemedText>
+                <Markdown
+                    style={markdownStyles}
+                >
+                    {item.commit.message}
+                </Markdown>
             </ThemedView>
         );
     };
@@ -194,11 +224,6 @@ const styles = StyleSheet.create({
     timeAgo: {
         fontSize: 14,
         opacity: 0.6,
-    },
-    commitMessage: {
-        fontSize: 16,
-        fontWeight: '500',
-        lineHeight: 22,
     },
     separator: {
         height: 12,
