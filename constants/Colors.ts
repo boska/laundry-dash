@@ -39,7 +39,7 @@ export const Colors = {
     tabIconSelected: brandColor,
     // Add semantic colors
     border: '#E5E7EB',
-    cardBackground: '#e6e6e6',
+    cardBackground: '#c2c2c2',
     inputBackground: '#F9FAFB',
     error: errorColor,
     primary: {

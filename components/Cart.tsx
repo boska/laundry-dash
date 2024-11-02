@@ -8,6 +8,7 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { updateQuantity } from '@/store/cartSlice';
 import { router } from 'expo-router';
+import { PaymentSelectorModal } from './PaymentSelectorModal';
 
 // Map of item types to icons
 const itemIcons: { [key: string]: keyof typeof FontAwesome.glyphMap } = {
@@ -23,11 +24,21 @@ const itemIcons: { [key: string]: keyof typeof FontAwesome.glyphMap } = {
 const DELIVERY_FEE = 5.99;
 const ESTIMATED_TIME = '45-60';
 
+// Add payment options
+const PAYMENT_OPTIONS = [
+    { id: 'cash', name: 'Cash', icon: 'money' },
+    { id: 'card', name: 'Credit Card', icon: 'credit-card' },
+    { id: 'apple', name: 'Apple Pay', icon: 'apple' },
+    { id: 'google', name: 'Google Pay', icon: 'google' },
+] as const;
+
 export const Cart = () => {
     const dispatch = useAppDispatch();
     const colorScheme = useColorScheme();
     const { items, total } = useAppSelector(state => state.cart);
     const tintColor = Colors[colorScheme ?? 'light'].tint;
+    const [selectedPayment, setSelectedPayment] = React.useState<string>('cash');
+    const [isPaymentModalVisible, setIsPaymentModalVisible] = React.useState(false);
 
     const handleQuantityUpdate = (itemId: string, serviceType: string, currentQuantity: number) => {
         dispatch(updateQuantity({
@@ -106,34 +117,52 @@ export const Cart = () => {
 
                     <ThemedView style={styles.divider} />
 
+                    <Pressable
+                        style={styles.paymentRow}
+                        onPress={() => setIsPaymentModalVisible(true)}
+                    >
+                        <ThemedView style={styles.paymentLeft}>
+                            <FontAwesome
+                                name={PAYMENT_OPTIONS.find(opt => opt.id === selectedPayment)?.icon || 'money'}
+                                size={20}
+                                color={tintColor}
+                            />
+                            <ThemedText style={styles.paymentLabel}>
+                                {PAYMENT_OPTIONS.find(opt => opt.id === selectedPayment)?.name || 'Select Payment'}
+                            </ThemedText>
+                        </ThemedView>
+                        <FontAwesome name="angle-right" size={20} color={Colors[colorScheme ?? 'light'].text} />
+                    </Pressable>
+
+                    <ThemedView style={styles.divider} />
+
                     <ThemedView style={styles.summaryRow}>
                         <ThemedText style={styles.totalLabel}>Total</ThemedText>
                         <ThemedText style={styles.totalAmount}>
                             ${(total + DELIVERY_FEE).toFixed(2)}
                         </ThemedText>
                     </ThemedView>
-
-                    <ThemedView style={styles.estimatedTimeContainer}>
-                        <FontAwesome
-                            name="clock-o"
-                            size={16}
-                            color={tintColor}
-                        />
-                        <ThemedText style={styles.estimatedTimeText}>
-                            Estimated Delivery Time: {ESTIMATED_TIME} mins
-                        </ThemedText>
-                    </ThemedView>
                 </ThemedView>
 
                 <Pressable
                     style={[styles.checkoutButton, { backgroundColor: tintColor }]}
-                    onPress={() => router.push('/checkout')}
+                    onPress={() => router.push({
+                        pathname: '/checkout',
+                        params: { paymentMethod: selectedPayment }
+                    })}
                 >
                     <ThemedText style={styles.checkoutButtonText}>
                         Checkout · ${(total + DELIVERY_FEE).toFixed(2)}
                     </ThemedText>
                 </Pressable>
             </ThemedView>
+
+            <PaymentSelectorModal
+                visible={isPaymentModalVisible}
+                onClose={() => setIsPaymentModalVisible(false)}
+                selectedPayment={selectedPayment}
+                onSelectPayment={setSelectedPayment}
+            />
         </ThemedView>
     );
 };
@@ -164,7 +193,7 @@ const styles = StyleSheet.create({
         marginBottom: 12,
         borderRadius: 8,
         borderWidth: 1,
-        borderColor: '#e0e0e0',
+        borderColor: Colors.light.border,
     },
     itemLeftSection: {
         flexDirection: 'row',
@@ -202,7 +231,7 @@ const styles = StyleSheet.create({
     footer: {
         padding: 16,
         borderTopWidth: 1,
-        borderTopColor: '#e0e0e0',
+        borderTopColor: Colors.light.border,
         gap: 16,
     },
     summaryContainer: {
@@ -223,8 +252,8 @@ const styles = StyleSheet.create({
     },
     divider: {
         height: 1,
-        backgroundColor: '#e0e0e0',
-        marginVertical: 4,
+        backgroundColor: Colors.light.border,
+        marginVertical: 12,
     },
     totalLabel: {
         fontSize: 18,
@@ -241,7 +270,7 @@ const styles = StyleSheet.create({
         marginTop: 8,
         paddingTop: 8,
         borderTopWidth: 1,
-        borderTopColor: '#e0e0e0',
+        borderTopColor: Colors.light.border,
     },
     estimatedTimeText: {
         fontSize: 14,
@@ -253,7 +282,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     checkoutButtonText: {
-        color: 'white',
+        color: Colors.light.background,
         fontSize: 16,
         fontWeight: '600',
     },
@@ -271,5 +300,20 @@ const styles = StyleSheet.create({
     itemQuantity: {
         fontSize: 14,
         fontWeight: '600',
+    },
+    paymentRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingVertical: 12,
+    },
+    paymentLeft: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 12,
+    },
+    paymentLabel: {
+        fontSize: 16,
+        fontWeight: '500',
     },
 }); 

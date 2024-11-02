@@ -11,6 +11,11 @@ import { ThemeProvider as ThemeContextProvider, useTheme } from '../ctx/ThemeCon
 import Toast from 'react-native-toast-message';
 import { AuthProvider, useAuth } from '@/ctx/AuthContext';
 import { ThemedText } from '@/components/ThemedText';
+import { Pressable, Platform } from 'react-native';
+import { FontAwesome } from '@expo/vector-icons';
+import { useNavigation, DrawerActions } from '@react-navigation/native';
+import { Colors } from '@/constants/Colors';
+import { useColorScheme } from '@/hooks/useColorScheme';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -18,11 +23,44 @@ function NavigationContent() {
   const { theme } = useTheme();
   const { session } = useAuth();
 
+  const DrawerButton = () => {
+    const navigation = useNavigation();
+    const colorScheme = useColorScheme();
+    const tintColor = Colors[colorScheme ?? 'light'].tint;
+
+    return (
+      <Pressable
+        onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
+        style={({ pressed }) => ({
+          marginLeft: 16,
+          opacity: Platform.OS === 'ios' ? (pressed ? 0.7 : 1) : 1,
+          padding: 8,
+        })}
+        android_ripple={{
+          color: `${tintColor}40`,
+          borderless: true,
+          radius: 20,
+        }}
+      >
+        <FontAwesome
+          name="bars"
+          size={24}
+          color={tintColor}
+        />
+      </Pressable>
+    );
+  };
+
   return (
     <ThemeProvider value={theme === 'dark' ? DarkTheme : DefaultTheme}>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <Drawer
           screenOptions={({ route }) => ({
+            headerLeft: () => <DrawerButton />,
+            drawerStyle: {
+
+            },
+            //  drawerActiveTintColor: '',
             drawerItemStyle: {
               display: [
                 '(tabs)',
