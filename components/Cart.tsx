@@ -32,6 +32,24 @@ const PAYMENT_OPTIONS = [
     { id: 'google', name: 'Google Pay', icon: 'google' },
 ] as const;
 
+// Add this type definition
+type MockOrder = {
+    id: string;
+    status: 'pick-up';
+    items: Array<{
+        id: string;
+        name: string;
+        type: string;
+        serviceType: string;
+        quantity: number;
+        price: number;
+    }>;
+    total: number;
+    paymentMethod: string;
+    createdAt: Date;
+    estimatedDelivery: Date;
+};
+
 export const Cart = () => {
     const dispatch = useAppDispatch();
     const colorScheme = useColorScheme();
@@ -39,6 +57,7 @@ export const Cart = () => {
     const tintColor = Colors[colorScheme ?? 'light'].tint;
     const [selectedPayment, setSelectedPayment] = React.useState<string>('cash');
     const [isPaymentModalVisible, setIsPaymentModalVisible] = React.useState(false);
+    const [isCreatingOrder, setIsCreatingOrder] = React.useState(false);
 
     const handleQuantityUpdate = (itemId: string, serviceType: string, currentQuantity: number) => {
         dispatch(updateQuantity({
@@ -49,6 +68,44 @@ export const Cart = () => {
     };
 
     const borderColor = Colors[colorScheme ?? 'light'].border;
+
+    const handleCheckout = async () => {
+        try {
+            setIsCreatingOrder(true);
+
+            const mockOrder: MockOrder = {
+                id: Math.random().toString(36).substring(2, 9),
+                status: 'pick-up',
+                items: items,
+                total: total,
+                paymentMethod: selectedPayment,
+                createdAt: new Date(),
+                estimatedDelivery: new Date(Date.now() + 2 * 60 * 60 * 1000),
+            };
+
+            // Simulate API call
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            // In real app: await createOrder(mockOrder);
+
+            // Clear cart (assuming you have a clearCart action)
+            // dispatch(clearCart());
+
+            router.push({
+                pathname: `/order/${mockOrder.id}`,
+                params: {
+                    total: mockOrder.total.toString(),
+                    estimatedDelivery: mockOrder.estimatedDelivery.toISOString(),
+                }
+            });
+        } catch (error) {
+            // Handle error
+            console.error('Failed to create order:', error);
+            // Show error message to user
+        } finally {
+            setIsCreatingOrder(false);
+        }
+    };
 
     if (items.length === 0) {
         return (
@@ -143,14 +200,16 @@ export const Cart = () => {
                 </ThemedView>
 
                 <Pressable
-                    style={[styles.checkoutButton, { backgroundColor: tintColor }]}
-                    onPress={() => router.push({
-                        pathname: '/',
-                        params: { paymentMethod: selectedPayment }
-                    })}
+                    style={[
+                        styles.checkoutButton,
+                        { backgroundColor: tintColor },
+                        isCreatingOrder && styles.checkoutButtonDisabled
+                    ]}
+                    onPress={handleCheckout}
+                    disabled={isCreatingOrder}
                 >
                     <ThemedText style={styles.checkoutButtonText}>
-                        Confirm Order · ${total.toFixed(2)}
+                        {isCreatingOrder ? 'Creating Order...' : `Confirm Order · $${total.toFixed(2)}`}
                     </ThemedText>
                 </Pressable>
             </ThemedView>
@@ -321,5 +380,8 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: '600',
         marginTop: 2,
+    },
+    checkoutButtonDisabled: {
+        opacity: 0.7,
     },
 }); 

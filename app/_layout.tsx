@@ -42,7 +42,15 @@ const DRAWER_SCREENS = [
       title: 'Support',
       drawerLabel: 'Support'
     }
-  }
+  },
+  {
+    name: 'order/[id]',
+    options: {
+      headerShown: true,
+      title: '',
+      drawerLabel: 'Orders',
+    }
+  },
 ] as const;
 
 function NavigationContent() {
@@ -54,6 +62,7 @@ function NavigationContent() {
       '(tabs)',
       'settings',
       'chatroom',
+      'order/[id]',
     ];
     return visibleRoutes.includes(routeName) ? 'flex' : 'none';
   };
