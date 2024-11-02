@@ -1,7 +1,7 @@
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import 'react-native-reanimated';
 import { Provider } from 'react-redux';
 import { store } from '../store/store';
@@ -10,45 +10,52 @@ import { Drawer } from 'expo-router/drawer';
 import { ThemeProvider as ThemeContextProvider, useTheme } from '../ctx/ThemeContext';
 import Toast from 'react-native-toast-message';
 import { AuthProvider, useAuth } from '@/ctx/AuthContext';
-import { ThemedText } from '@/components/ThemedText';
-import { Pressable, Platform } from 'react-native';
+import { DrawerButton } from '@/components/navigation/DrawerButton';
+import { Modal, Pressable } from 'react-native';
+import LoginScreen from './login';
 import { FontAwesome } from '@expo/vector-icons';
-import { useNavigation, DrawerActions } from '@react-navigation/native';
 import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
 
 SplashScreen.preventAutoHideAsync();
 
+const DRAWER_SCREENS = [
+  {
+    name: '(tabs)',
+    options: {
+      headerShown: true,
+      title: 'LaundryDash',
+      drawerLabel: 'Home',
+    }
+  },
+  {
+    name: 'settings',
+    options: {
+      headerShown: true,
+      title: 'Settings',
+      drawerLabel: 'Settings'
+    }
+  },
+  {
+    name: 'chatroom',
+    options: {
+      headerShown: true,
+      title: 'Support',
+      drawerLabel: 'Support'
+    }
+  }
+] as const;
+
 function NavigationContent() {
   const { theme } = useTheme();
-  const { session } = useAuth();
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
-  const DrawerButton = () => {
-    const navigation = useNavigation();
-    const colorScheme = useColorScheme();
-    const tintColor = Colors[colorScheme ?? 'light'].tint;
-
-    return (
-      <Pressable
-        onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
-        style={({ pressed }) => ({
-          marginLeft: 16,
-          opacity: Platform.OS === 'ios' ? (pressed ? 0.7 : 1) : 1,
-          padding: 8,
-        })}
-        android_ripple={{
-          color: `${tintColor}40`,
-          borderless: true,
-          radius: 20,
-        }}
-      >
-        <FontAwesome
-          name="bars"
-          size={24}
-          color={tintColor}
-        />
-      </Pressable>
-    );
+  const getDrawerItemVisibility = (routeName: string) => {
+    const visibleRoutes = [
+      '(tabs)',
+      'settings',
+      'chatroom',
+    ];
+    return visibleRoutes.includes(routeName) ? 'flex' : 'none';
   };
 
   return (
@@ -57,72 +64,40 @@ function NavigationContent() {
         <Drawer
           screenOptions={({ route }) => ({
             headerLeft: () => <DrawerButton />,
-            drawerStyle: {
-
-            },
-            //  drawerActiveTintColor: '',
+            headerRight: () => (
+              <Pressable
+                onPress={() => setShowLoginModal(true)}
+                style={{ marginRight: 16 }}
+              >
+                <FontAwesome
+                  name="user"
+                  size={24}
+                  color={Colors[theme ?? 'light'].tint}
+                />
+              </Pressable>
+            ),
             drawerItemStyle: {
-              display: [
-                '(tabs)',
-                session ? 'phone-verify' : 'login',
-                'settings',
-                'login',
-                'chatroom',
-                '+not-found',
-              ].includes(route.name) ? 'flex' : 'none'
+              display: getDrawerItemVisibility(route.name)
             }
           })}
         >
-          <Drawer.Screen
-            name="(tabs)"
-            options={{
-              headerShown: true,
-              title: 'Home',
-              drawerLabel: 'Home',
-            }}
-          />
-          <Drawer.Screen
-            name="login"
-            options={{
-              headerShown: true,
-              title: '',
-              drawerLabel: 'Login'
-            }}
-          />
-          <Drawer.Screen
-            name="settings"
-            options={{
-              headerShown: true,
-              title: 'Settings',
-              drawerLabel: 'Settings'
-            }}
-          />
-          <Drawer.Screen
-            name="phone-verify"
-            options={{
-              headerShown: true,
-              title: '',
-              drawerLabel: 'Phone Verification'
-            }}
-          />
-
-          <Drawer.Screen
-            name="chatroom"
-            options={{
-              headerShown: true,
-              title: 'Support',
-              drawerLabel: 'Support'
-            }}
-          />
-          <Drawer.Screen
-            name="+not-found"
-            options={{
-              headerShown: true,
-              title: '404',
-              drawerLabel: '404'
-            }}
-          />
+          {DRAWER_SCREENS.map((screen) => (
+            <Drawer.Screen
+              key={screen.name}
+              name={screen.name}
+              options={screen.options}
+            />
+          ))}
         </Drawer>
+
+        <Modal
+          visible={showLoginModal}
+          animationType="slide"
+          presentationStyle="pageSheet"
+          onRequestClose={() => setShowLoginModal(false)}
+        >
+          <LoginScreen onClose={() => setShowLoginModal(false)} />
+        </Modal>
       </GestureHandlerRootView>
     </ThemeProvider>
   );

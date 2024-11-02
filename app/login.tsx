@@ -10,7 +10,12 @@ import { useLanguage } from '@/hooks/useLanguage';
 import { useAuth } from '@/ctx/AuthContext';
 import { Colors } from '@/constants/Colors';
 import { router } from 'expo-router';
-const LoginScreen = () => {
+
+interface LoginScreenProps {
+    onClose?: () => void;
+}
+
+const LoginScreen = ({ onClose }: LoginScreenProps) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errors, setErrors] = useState({ email: '', password: '' });
@@ -62,6 +67,7 @@ const LoginScreen = () => {
                 position: 'bottom',
                 visibilityTime: 3000,
             });
+            onClose?.();
         } catch (error) {
             Toast.show({
                 type: 'error',
@@ -80,8 +86,12 @@ const LoginScreen = () => {
         try {
             if (provider === 'Google') {
                 await loginWithGoogle();
+                onClose?.();
+
             } else {
                 await loginWithFacebook();
+                onClose?.();
+
             }
             Toast.show({
                 type: 'success',
@@ -90,8 +100,10 @@ const LoginScreen = () => {
                 position: 'bottom',
                 visibilityTime: 3000,
             });
+
+
             // Here you would typically navigate to the main app
-            // router.push('/');
+            router.push('/');
         } catch (error) {
             Toast.show({
                 type: 'error',
@@ -112,19 +124,20 @@ const LoginScreen = () => {
             style={[styles.container, { backgroundColor: theme.background }]}
             behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         >
+            <View style={styles.handleBar} />
             <ScrollView
-                contentContainerStyle={[styles.scrollContent, { backgroundColor: theme.background }]}
+                contentContainerStyle={styles.scrollContent}
                 showsVerticalScrollIndicator={false}
                 keyboardShouldPersistTaps="handled"
             >
-                <ThemedView style={styles.formContainer}>
-                    <ThemedView style={styles.header}>
-                        <ThemedText style={styles.title}>{t.login.welcomeBack}</ThemedText>
-                        <ThemedText style={[styles.subtitle, { color: theme.secondary.text }]}>
-                            {t.login.chooseHowToLogin}
-                        </ThemedText>
-                    </ThemedView>
+                <View style={styles.header}>
+                    <ThemedText style={styles.title}>{t.login.welcomeBack}</ThemedText>
+                    <ThemedText style={[styles.subtitle, { color: theme.secondary.text }]}>
+                        {t.login.chooseHowToLogin}
+                    </ThemedText>
+                </View>
 
+                <ThemedView style={styles.formContainer}>
                     <ThemedView style={styles.socialButtonsContainer}>
                         <Pressable
                             style={[styles.socialButton, {
@@ -287,6 +300,14 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
+    handleBar: {
+        width: 36,
+        height: 5,
+        backgroundColor: '#DEDEDE',
+        borderRadius: 3,
+        alignSelf: 'center',
+        marginVertical: 8,
+    },
     scrollContent: {
         flexGrow: 1,
     },
@@ -295,24 +316,23 @@ const styles = StyleSheet.create({
         padding: 24,
     },
     header: {
-        marginTop: 32,
-        marginBottom: 32,
         alignItems: 'center',
+        marginBottom: 24,
     },
     title: {
-        fontSize: 32,
+        fontSize: 24,
         fontWeight: 'bold',
         marginBottom: 8,
     },
     subtitle: {
-        fontSize: 16,
+        fontSize: 14,
     },
     socialButtonsContainer: {
-        gap: 16,
-        marginBottom: 32,
+        gap: 12,
+        marginBottom: 24,
     },
     socialButton: {
-        height: 48,
+        height: 44,
         borderRadius: 8,
         borderWidth: 1,
         justifyContent: 'center',
@@ -412,6 +432,13 @@ const styles = StyleSheet.create({
         padding: 12,
         borderRadius: 8,
         marginBottom: 16,
+    },
+    closeButton: {
+        position: 'absolute',
+        top: 16,
+        right: 16,
+        padding: 8,
+        zIndex: 1,
     },
 });
 

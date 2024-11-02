@@ -147,7 +147,7 @@ export const Cart = () => {
                 <Pressable
                     style={[styles.checkoutButton, { backgroundColor: tintColor }]}
                     onPress={() => router.push({
-                        pathname: '/checkout',
+                        pathname: '/',
                         params: { paymentMethod: selectedPayment }
                     })}
                 >
