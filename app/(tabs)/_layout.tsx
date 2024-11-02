@@ -12,6 +12,7 @@ import { Language } from '@/constants/i18n';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { setLanguage } from '@/store/languageSlice';
 import PostListScreen from '../news';
+import { Cart } from '@/components/Cart';
 
 export default function TabLayout2() {
   const colorScheme = useColorScheme();
@@ -27,7 +28,7 @@ export default function TabLayout2() {
 
   return (
     <>
-      <PostListScreen />
+      <Cart />
     </>
   );
 }
