@@ -19,6 +19,10 @@ const itemIcons: { [key: string]: keyof typeof FontAwesome.glyphMap } = {
     default: 'shopping-bag'
 };
 
+// Add these constants at the top of the file
+const DELIVERY_FEE = 5.99;
+const ESTIMATED_TIME = '45-60';
+
 export const Cart = () => {
     const dispatch = useAppDispatch();
     const colorScheme = useColorScheme();
@@ -89,16 +93,45 @@ export const Cart = () => {
             </ScrollView>
 
             <ThemedView style={styles.footer}>
-                <ThemedView style={styles.totalContainer}>
-                    <ThemedText style={styles.totalLabel}>Total</ThemedText>
-                    <ThemedText style={styles.totalAmount}>${total.toFixed(2)}</ThemedText>
+                <ThemedView style={styles.summaryContainer}>
+                    <ThemedView style={styles.summaryRow}>
+                        <ThemedText style={styles.summaryLabel}>Subtotal</ThemedText>
+                        <ThemedText style={styles.summaryValue}>${total.toFixed(2)}</ThemedText>
+                    </ThemedView>
+
+                    <ThemedView style={styles.summaryRow}>
+                        <ThemedText style={styles.summaryLabel}>Delivery Fee</ThemedText>
+                        <ThemedText style={styles.summaryValue}>${DELIVERY_FEE}</ThemedText>
+                    </ThemedView>
+
+                    <ThemedView style={styles.divider} />
+
+                    <ThemedView style={styles.summaryRow}>
+                        <ThemedText style={styles.totalLabel}>Total</ThemedText>
+                        <ThemedText style={styles.totalAmount}>
+                            ${(total + DELIVERY_FEE).toFixed(2)}
+                        </ThemedText>
+                    </ThemedView>
+
+                    <ThemedView style={styles.estimatedTimeContainer}>
+                        <FontAwesome
+                            name="clock-o"
+                            size={16}
+                            color={tintColor}
+                        />
+                        <ThemedText style={styles.estimatedTimeText}>
+                            Estimated Delivery Time: {ESTIMATED_TIME} mins
+                        </ThemedText>
+                    </ThemedView>
                 </ThemedView>
 
                 <Pressable
                     style={[styles.checkoutButton, { backgroundColor: tintColor }]}
                     onPress={() => router.push('/checkout')}
                 >
-                    <ThemedText style={styles.checkoutButtonText}>Checkout</ThemedText>
+                    <ThemedText style={styles.checkoutButtonText}>
+                        Checkout · ${(total + DELIVERY_FEE).toFixed(2)}
+                    </ThemedText>
                 </Pressable>
             </ThemedView>
         </ThemedView>
@@ -170,11 +203,28 @@ const styles = StyleSheet.create({
         padding: 16,
         borderTopWidth: 1,
         borderTopColor: '#e0e0e0',
+        gap: 16,
     },
-    totalContainer: {
+    summaryContainer: {
+        gap: 12,
+    },
+    summaryRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginBottom: 16,
+        alignItems: 'center',
+    },
+    summaryLabel: {
+        fontSize: 16,
+        opacity: 0.7,
+    },
+    summaryValue: {
+        fontSize: 16,
+        fontWeight: '500',
+    },
+    divider: {
+        height: 1,
+        backgroundColor: '#e0e0e0',
+        marginVertical: 4,
     },
     totalLabel: {
         fontSize: 18,
@@ -182,7 +232,20 @@ const styles = StyleSheet.create({
     },
     totalAmount: {
         fontSize: 18,
-        fontWeight: '600',
+        fontWeight: '700',
+    },
+    estimatedTimeContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 8,
+        marginTop: 8,
+        paddingTop: 8,
+        borderTopWidth: 1,
+        borderTopColor: '#e0e0e0',
+    },
+    estimatedTimeText: {
+        fontSize: 14,
+        opacity: 0.7,
     },
     checkoutButton: {
         padding: 16,

@@ -16,8 +16,8 @@ interface CartState {
 
 const initialState: CartState = {
     items: [
-        { id: '1', name: 'Dash', price: 100, quantity: 1, serviceType: 'basic', type: 'pants' },
-        { id: '2', name: 'DashPET', price: 150, quantity: 1, serviceType: 'basic', type: 'animal' },
+        { id: '1', name: 'Instant', price: 300, quantity: 1, serviceType: 'basic', type: 'pants' },
+        { id: '2', name: 'Pet Wash', price: 200, quantity: 0, serviceType: 'premium', type: 'animal' },
     ],
     total: 100,
 };
