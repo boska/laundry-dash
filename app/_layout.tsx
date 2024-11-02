@@ -10,6 +10,7 @@ import { Drawer } from 'expo-router/drawer';
 import { ThemeProvider as ThemeContextProvider, useTheme } from '../ctx/ThemeContext';
 import Toast from 'react-native-toast-message';
 import { AuthProvider, useAuth } from '@/ctx/AuthContext';
+import CameraScreen from '@/app/CameraScreen'; // Import the Camera Screen
 
 SplashScreen.preventAutoHideAsync();
 
@@ -26,9 +27,10 @@ function NavigationContent() {
               display: [
                 '(tabs)',
                 session ? 'settings' : 'login',
+                'camera',
                 'phone-verify',
                 'chatroom',
-                '+not-found'
+                '+not-found',
               ].includes(route.name) ? 'flex' : 'none'
             }
           })}
@@ -79,6 +81,14 @@ function NavigationContent() {
               headerShown: true,
               title: '404',
               drawerLabel: '404'
+            }}
+          />
+          <Drawer.Screen
+            name="camera"
+            options={{
+              headerShown: true,
+              title: 'Camera',
+              drawerLabel: 'Camera'
             }}
           />
         </Drawer>
