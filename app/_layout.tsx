@@ -29,7 +29,6 @@ function NavigationContent() {
                 session ? 'phone-verify' : 'login',
                 'settings',
                 'login',
-                'news',
                 'chatroom',
                 '+not-found',
               ].includes(route.name) ? 'flex' : 'none'
@@ -68,6 +67,7 @@ function NavigationContent() {
               drawerLabel: 'Phone Verification'
             }}
           />
+
           <Drawer.Screen
             name="chatroom"
             options={{

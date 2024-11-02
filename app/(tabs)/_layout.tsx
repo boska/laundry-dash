@@ -11,6 +11,7 @@ import { LaundryDash } from '@/components/LaundryDash';
 import { Language } from '@/constants/i18n';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { setLanguage } from '@/store/languageSlice';
+import PostListScreen from '../news';
 
 export default function TabLayout2() {
   const colorScheme = useColorScheme();
@@ -26,10 +27,7 @@ export default function TabLayout2() {
 
   return (
     <>
-      <LaundryDash
-        colorScheme={colorScheme as 'light' | 'dark' | null}
-        language={currentLanguage}
-      />
+      <PostListScreen />
     </>
   );
 }

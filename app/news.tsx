@@ -56,15 +56,21 @@ function getRelativeTime(date: string) {
     return `${diffInYears} year${diffInYears === 1 ? '' : 's'} ago`;
 }
 
-export default function NewsScreen() {
+interface PostListScreenProps {
+    owner?: string;
+    repo?: string;
+}
+
+export default function PostListScreen({ owner = 'boska', repo = 'laundry-dash' }: PostListScreenProps) {
     const [commits, setCommits] = useState<Commit[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isRefreshing, setIsRefreshing] = useState(false);
     const { theme } = useTheme();
 
     const fetchCommitMessages = async () => {
-        const url = 'https://api.github.com/repos/boska/laundry-dash/commits';
+        const url = `https://api.github.com/repos/${owner}/${repo}/commits`;
 
+        console.log('Fetching commits from:', url);
         try {
             const response = await fetch(url, {
                 headers: { 'Accept': 'application/vnd.github.v3+json' }
@@ -118,7 +124,7 @@ export default function NewsScreen() {
     if (!commits.length) {
         return (
             <NoData
-                colorScheme={theme}
+                colorScheme={theme ?? 'light'}
                 icon="git-commit-outline"
                 title="No commits found"
                 subtitle="Pull down to refresh and check for new commits"

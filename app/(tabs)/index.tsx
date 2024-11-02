@@ -11,5 +11,5 @@ import LoginScreen from '../login';
 import ChatRoom from '../chatroom';
 
 export default function Index() {
-    return <ChatRoom />;
+    return <Link href="/posts/boska@laundry-dash">Posts</Link>;
 }
