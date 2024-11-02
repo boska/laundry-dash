@@ -46,7 +46,6 @@ const CameraScreen = () => {
             <CameraView
                 style={styles.camera}
                 facing={facing}
-                onBarCodeScanned={handleBarCodeScanned}
             >
                 <ThemedView style={styles.buttonContainer}>
                     <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>

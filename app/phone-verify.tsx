@@ -63,7 +63,7 @@ const PhoneNumberScreen = () => {
         <>
             <ThemedView style={styles.container}>
                 <ThemedView style={styles.header}>
-                    <ThemedText type="title" style={styles.title}>Verify Your Phone</ThemedText>
+                    <ThemedText style={styles.title}>Verify Your Phone</ThemedText>
                     <ThemedText style={[styles.subtitle, { color: Colors[colorScheme ?? 'light'].tabIconDefault }]}>
                         Enter your phone number to receive a verification code
                     </ThemedText>

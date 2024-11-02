@@ -187,7 +187,7 @@ export default function PostListScreen({ owner = 'boska', repo = 'laundry-dash' 
                         </ThemedView>
                     </ThemedView>
                     <Markdown
-                        style={markdownStyles}
+                        style={markdownStyles as any}
                     >
                         {item.commit.message}
                     </Markdown>
