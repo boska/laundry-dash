@@ -9,12 +9,13 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Drawer } from 'expo-router/drawer';
 import { ThemeProvider as ThemeContextProvider, useTheme } from '../ctx/ThemeContext';
 import Toast from 'react-native-toast-message';
-import { AuthProvider } from '@/ctx/AuthContext';
+import { AuthProvider, useAuth } from '@/ctx/AuthContext';
 
 SplashScreen.preventAutoHideAsync();
 
 function NavigationContent() {
   const { theme } = useTheme();
+  const { session } = useAuth();
 
   return (
     <ThemeProvider value={theme === 'dark' ? DarkTheme : DefaultTheme}>
@@ -22,7 +23,13 @@ function NavigationContent() {
         <Drawer
           screenOptions={({ route }) => ({
             drawerItemStyle: {
-              display: ['(tabs)', 'login', 'settings'].includes(route.name) ? 'flex' : 'none'
+              display: [
+                '(tabs)',
+                session ? 'settings' : 'login',
+                'phone-verify',
+                'chatroom',
+                '+not-found'
+              ].includes(route.name) ? 'flex' : 'none'
             }
           })}
         >
