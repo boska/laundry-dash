@@ -5,6 +5,8 @@ interface AuthContextType {
     signIn: (token: string) => void;
     signOut: () => void;
     login: (email: string, password: string) => Promise<void>;
+    loginWithGoogle: () => Promise<void>;
+    loginWithFacebook: () => Promise<void>;
     session: string | null;
     isLoading: boolean;
 }
@@ -44,8 +46,36 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         await signIn(token);
     };
 
+    const loginWithGoogle = async () => {
+        try {
+            // await GoogleSignin.hasPlayServices();
+            // const { idToken } = await GoogleSignin.signIn();
+            // await signIn(idToken);
+        } catch (error) {
+            console.error(error);
+            throw new Error('Google login failed');
+        }
+    };
+
+    const loginWithFacebook = async () => {
+        try {
+            // const result = await LoginManager.logInWithPermissions(['public_profile', 'email']);
+            // if (result.isCancelled) {
+            //     throw new Error('User cancelled the login process');
+            // }
+            // const data = await AccessToken.getCurrentAccessToken();
+            // if (!data) {
+            //     throw new Error('Facebook login failed');
+            // }
+            // await signIn(data.accessToken);
+        } catch (error) {
+            console.error(error);
+            throw new Error('Facebook login failed');
+        }
+    };
+
     return (
-        <AuthContext.Provider value={{ signIn, signOut, login, session, isLoading }}>
+        <AuthContext.Provider value={{ signIn, signOut, login, loginWithGoogle, loginWithFacebook, session, isLoading }}>
             {children}
         </AuthContext.Provider>
     );

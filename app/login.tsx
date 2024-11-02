@@ -20,7 +20,7 @@ const LoginScreen = () => {
     const theme = Colors[colorScheme ?? 'light'];
     const { currentLanguage } = useLanguage();
     const t = getTranslation(currentLanguage);
-    const { login } = useAuth();
+    const { login, loginWithGoogle, loginWithFacebook } = useAuth();
 
     const validateEmail = (email: string) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -78,7 +78,11 @@ const LoginScreen = () => {
     const handleSocialLogin = async (provider: 'Google' | 'Facebook') => {
         setIsLoading(true);
         try {
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            if (provider === 'Google') {
+                await loginWithGoogle();
+            } else {
+                await loginWithFacebook();
+            }
             Toast.show({
                 type: 'success',
                 text1: t.login.loginSuccess + provider,
@@ -88,6 +92,14 @@ const LoginScreen = () => {
             });
             // Here you would typically navigate to the main app
             // router.push('/');
+        } catch (error) {
+            Toast.show({
+                type: 'error',
+                text1: t.login.loginFailed,
+                text2: t.login.loginFailedMessage,
+                position: 'bottom',
+                visibilityTime: 3000,
+            });
         } finally {
             setIsLoading(false);
         }
