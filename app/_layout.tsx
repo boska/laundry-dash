@@ -27,7 +27,6 @@ function NavigationContent() {
               display: [
                 '(tabs)',
                 session ? 'settings' : 'login',
-                'camera',
                 'phone-verify',
                 'chatroom',
                 '+not-found',
@@ -81,14 +80,6 @@ function NavigationContent() {
               headerShown: true,
               title: '404',
               drawerLabel: '404'
-            }}
-          />
-          <Drawer.Screen
-            name="camera"
-            options={{
-              headerShown: true,
-              title: 'Camera',
-              drawerLabel: 'Camera'
             }}
           />
         </Drawer>
