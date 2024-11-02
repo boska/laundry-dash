@@ -10,6 +10,7 @@ import { Drawer } from 'expo-router/drawer';
 import { ThemeProvider as ThemeContextProvider, useTheme } from '../ctx/ThemeContext';
 import Toast from 'react-native-toast-message';
 import { AuthProvider, useAuth } from '@/ctx/AuthContext';
+import { ThemedText } from '@/components/ThemedText';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -28,6 +29,7 @@ function NavigationContent() {
                 session ? 'phone-verify' : 'login',
                 'settings',
                 'login',
+                'news',
                 'chatroom',
                 '+not-found',
               ].includes(route.name) ? 'flex' : 'none'
@@ -39,7 +41,7 @@ function NavigationContent() {
             options={{
               headerShown: true,
               title: 'Home',
-              drawerLabel: 'Home'
+              drawerLabel: 'Home',
             }}
           />
           <Drawer.Screen
