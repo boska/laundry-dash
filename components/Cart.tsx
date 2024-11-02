@@ -48,6 +48,8 @@ export const Cart = () => {
         }));
     };
 
+    const borderColor = Colors[colorScheme ?? 'light'].border;
+
     if (items.length === 0) {
         return (
             <ThemedView style={styles.emptyContainer}>
@@ -62,13 +64,14 @@ export const Cart = () => {
     }
 
     return (
-        <ThemedView style={styles.container}>
+        <ThemedView style={[styles.container]}>
             <ScrollView style={styles.itemList}>
                 {items.map((item) => (
                     <Pressable
                         key={`${item.id}-${item.serviceType}`}
                         style={({ pressed }) => [
                             styles.itemCard,
+                            { borderColor },
                             pressed && styles.itemCardPressed
                         ]}
                         onPress={() => handleQuantityUpdate(item.id, item.serviceType, item.quantity)}
@@ -103,19 +106,23 @@ export const Cart = () => {
                 ))}
             </ScrollView>
 
-            <ThemedView style={styles.footer}>
+            <ThemedView style={[styles.footer, { borderTopColor: borderColor }]}>
                 <ThemedView style={styles.summaryContainer}>
-                    <ThemedView style={styles.summaryRow}>
-                        <ThemedText style={styles.summaryLabel}>Subtotal</ThemedText>
-                        <ThemedText style={styles.summaryValue}>${total.toFixed(2)}</ThemedText>
+                    <ThemedView style={styles.deliveryInfoContainer}>
+                        <FontAwesome
+                            name="truck"
+                            size={20}
+                            color={tintColor}
+                        />
+                        <ThemedView>
+                            <ThemedText style={styles.deliveryLabel}>Estimated Delivery</ThemedText>
+                            <ThemedText style={styles.deliveryTime}>
+                                Today, {new Date().getHours() + 1}:00 - {new Date().getHours() + 2}:00
+                            </ThemedText>
+                        </ThemedView>
                     </ThemedView>
 
-                    <ThemedView style={styles.summaryRow}>
-                        <ThemedText style={styles.summaryLabel}>Delivery Fee</ThemedText>
-                        <ThemedText style={styles.summaryValue}>${DELIVERY_FEE}</ThemedText>
-                    </ThemedView>
-
-                    <ThemedView style={styles.divider} />
+                    <ThemedView style={[styles.divider, { backgroundColor: borderColor }]} />
 
                     <Pressable
                         style={styles.paymentRow}
@@ -133,15 +140,6 @@ export const Cart = () => {
                         </ThemedView>
                         <FontAwesome name="angle-right" size={20} color={Colors[colorScheme ?? 'light'].text} />
                     </Pressable>
-
-                    <ThemedView style={styles.divider} />
-
-                    <ThemedView style={styles.summaryRow}>
-                        <ThemedText style={styles.totalLabel}>Total</ThemedText>
-                        <ThemedText style={styles.totalAmount}>
-                            ${(total + DELIVERY_FEE).toFixed(2)}
-                        </ThemedText>
-                    </ThemedView>
                 </ThemedView>
 
                 <Pressable
@@ -152,7 +150,7 @@ export const Cart = () => {
                     })}
                 >
                     <ThemedText style={styles.checkoutButtonText}>
-                        Checkout · ${(total + DELIVERY_FEE).toFixed(2)}
+                        Confirm Order · ${total.toFixed(2)}
                     </ThemedText>
                 </Pressable>
             </ThemedView>
@@ -193,7 +191,6 @@ const styles = StyleSheet.create({
         marginBottom: 12,
         borderRadius: 8,
         borderWidth: 1,
-        borderColor: Colors.light.border,
     },
     itemLeftSection: {
         flexDirection: 'row',
@@ -231,7 +228,6 @@ const styles = StyleSheet.create({
     footer: {
         padding: 16,
         borderTopWidth: 1,
-        borderTopColor: Colors.light.border,
         gap: 16,
     },
     summaryContainer: {
@@ -252,7 +248,6 @@ const styles = StyleSheet.create({
     },
     divider: {
         height: 1,
-        backgroundColor: Colors.light.border,
         marginVertical: 12,
     },
     totalLabel: {
@@ -315,5 +310,20 @@ const styles = StyleSheet.create({
     paymentLabel: {
         fontSize: 16,
         fontWeight: '500',
+    },
+    deliveryInfoContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 12,
+        paddingVertical: 8,
+    },
+    deliveryLabel: {
+        fontSize: 14,
+        opacity: 0.7,
+    },
+    deliveryTime: {
+        fontSize: 16,
+        fontWeight: '600',
+        marginTop: 2,
     },
 }); 
