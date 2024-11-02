@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRouter } from 'expo-router';
 
 interface AuthContextType {
     signIn: (token: string) => void;
@@ -16,6 +17,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [session, setSession] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const router = useRouter();
 
     useEffect(() => {
         const loadSession = async () => {
@@ -32,12 +34,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const signIn = async (token: string) => {
         await AsyncStorage.setItem('user-token', token);
         setSession(token);
+        router.push('/settings');
     };
 
-    const signOut = async () => {
+    const signOut = useCallback(async () => {
         await AsyncStorage.removeItem('user-token');
         setSession(null);
-    };
+        router.push('/');
+    }, [router]);
 
     const login = async (email: string, password: string) => {
         await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -48,6 +52,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     const loginWithGoogle = async () => {
         try {
+            const token = 'dummy-token';
+            await signIn(token);
             // await GoogleSignin.hasPlayServices();
             // const { idToken } = await GoogleSignin.signIn();
             // await signIn(idToken);
@@ -59,6 +65,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     const loginWithFacebook = async () => {
         try {
+            const token = 'dummy-token';
+            await signIn(token);
             // const result = await LoginManager.logInWithPermissions(['public_profile', 'email']);
             // if (result.isCancelled) {
             //     throw new Error('User cancelled the login process');

@@ -86,6 +86,7 @@ export default {
             system: '系統',
             light: '淺色',
             dark: '深色'
-        }
+        },
+        signOut: '登出'
     }
 }; 

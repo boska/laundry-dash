@@ -7,10 +7,12 @@ import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/constants/Colors';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { getTranslation } from '@/constants/i18n';
+import { useAuth } from '@/ctx/AuthContext';
 
 export default function SettingsScreen() {
   const { theme, themeMode, setThemeMode } = useTheme();
   const { currentLanguage, changeLanguage } = useLanguage();
+  const { signOut } = useAuth();
   const t = getTranslation(currentLanguage);
 
   const themeOptions: { label: string; value: 'system' | 'light' | 'dark' }[] = [
@@ -77,6 +79,27 @@ export default function SettingsScreen() {
             )}
           </TouchableOpacity>
         ))}
+
+        {/* Sign Out Button */}
+        <TouchableOpacity
+          style={styles.listItem}
+          onPress={signOut}
+        >
+          <ThemedView style={styles.itemContent}>
+            <Ionicons
+              name="log-out"
+              size={22}
+              color={Colors[theme ?? 'light'].text}
+              style={styles.icon}
+            />
+            <ThemedText style={styles.itemLabel}>{t.settings.signOut}</ThemedText>
+          </ThemedView>
+          <Ionicons
+            name="chevron-forward"
+            size={20}
+            color={Colors[theme ?? 'light'].text}
+          />
+        </TouchableOpacity>
       </ThemedView>
     </ThemedView>
   );
@@ -114,5 +137,17 @@ const styles = StyleSheet.create({
     fontSize: 14,
     opacity: 0.6,
     marginTop: 2,
+  },
+  signOutButton: {
+    paddingVertical: 16,
+    paddingHorizontal: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: Colors.light.text + '20',
+  },
+  signOutText: {
+    fontSize: 17,
+    color: Colors.red,
   },
 });

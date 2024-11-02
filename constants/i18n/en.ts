@@ -1,7 +1,7 @@
 export default {
     laundryDash: {
-        title: 'Laundry Service',
-        subtitle: 'Professional Cleaning at Your Convenience',
+        title: 'Laundry Dash',
+        subtitle: '24/7 Door to Door Laundry Service',
         features: {
             sameDay: 'Same Day Service',
             delivery: 'Free Delivery',
@@ -75,7 +75,8 @@ export default {
             system: 'System',
             light: 'Light',
             dark: 'Dark'
-        }
+        },
+        signOut: 'Sign Out'
     },
     signup: {
         createAccount: 'Create your Account',
