@@ -2,7 +2,7 @@ import { TextInput, Image, StyleSheet, Pressable, ActivityIndicator, ScrollView,
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { useState } from 'react';
-import { useColorScheme } from '@/hooks/useColorScheme';
+import { useTheme } from '@/ctx/ThemeContext';
 import { Ionicons } from '@expo/vector-icons';
 import Toast from 'react-native-toast-message';
 import { getTranslation } from '@/constants/i18n';
@@ -16,8 +16,8 @@ const LoginScreen = () => {
     const [errors, setErrors] = useState({ email: '', password: '' });
     const [isLoading, setIsLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
-    const colorScheme = useColorScheme();
-    const theme = Colors[colorScheme ?? 'light'];
+    const { theme: themeMode } = useTheme();
+    const theme = Colors[themeMode ?? 'light'];
     const { currentLanguage } = useLanguage();
     const t = getTranslation(currentLanguage);
     const { login, loginWithGoogle, loginWithFacebook } = useAuth();
