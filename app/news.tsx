@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { StyleSheet, FlatList, ActivityIndicator, RefreshControl, Image } from 'react-native';
+import { StyleSheet, FlatList, ActivityIndicator, RefreshControl, Image, Linking, Pressable } from 'react-native';
 import Markdown from 'react-native-markdown-display';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
@@ -9,6 +9,7 @@ import { NoData } from '@/components/NoData';
 
 interface Commit {
     sha: string;
+    html_url: string;
     commit: {
         message: string;
         author: {
@@ -92,6 +93,20 @@ export default function NewsScreen() {
         fetchCommitMessages();
     };
 
+    const handleCommitPress = async (url: string) => {
+        try {
+            const supported = await Linking.canOpenURL(url);
+
+            if (supported) {
+                await Linking.openURL(url);
+            } else {
+                console.log("Can't open URL:", url);
+            }
+        } catch (error) {
+            console.error("Error opening URL:", error);
+        }
+    };
+
     if (isLoading) {
         return (
             <ThemedView style={styles.loadingContainer}>
@@ -140,30 +155,38 @@ export default function NewsScreen() {
         };
 
         return (
-            <ThemedView
-                style={[
-                    styles.commitItem,
-                    { backgroundColor: Colors[theme ?? 'light'].cardBackground }
+            <Pressable
+                onPress={() => handleCommitPress(item.html_url)}
+                style={({ pressed }) => [
+                    styles.pressable,
+                    pressed && styles.pressed
                 ]}
             >
-                <ThemedView style={[styles.authorContainer, { backgroundColor: 'transparent' }]}>
-                    <Image
-                        source={{ uri: item.author?.avatar_url }}
-                        style={styles.avatar}
-                    />
-                    <ThemedView style={[styles.authorInfo, { backgroundColor: 'transparent' }]}>
-                        <ThemedText style={styles.authorName}>
-                            {item.author?.login || item.commit.author.name}
-                        </ThemedText>
-                        <ThemedText style={styles.timeAgo}>{relativeTime}</ThemedText>
-                    </ThemedView>
-                </ThemedView>
-                <Markdown
-                    style={markdownStyles}
+                <ThemedView
+                    style={[
+                        styles.commitItem,
+                        { backgroundColor: Colors[theme ?? 'light'].cardBackground }
+                    ]}
                 >
-                    {item.commit.message}
-                </Markdown>
-            </ThemedView>
+                    <ThemedView style={[styles.authorContainer, { backgroundColor: 'transparent' }]}>
+                        <Image
+                            source={{ uri: item.author?.avatar_url }}
+                            style={styles.avatar}
+                        />
+                        <ThemedView style={[styles.authorInfo, { backgroundColor: 'transparent' }]}>
+                            <ThemedText style={styles.authorName}>
+                                {item.author?.login || item.commit.author.name}
+                            </ThemedText>
+                            <ThemedText style={styles.timeAgo}>{relativeTime}</ThemedText>
+                        </ThemedView>
+                    </ThemedView>
+                    <Markdown
+                        style={markdownStyles}
+                    >
+                        {item.commit.message}
+                    </Markdown>
+                </ThemedView>
+            </Pressable>
         );
     };
 
@@ -227,5 +250,11 @@ const styles = StyleSheet.create({
     },
     separator: {
         height: 12,
+    },
+    pressable: {
+        borderRadius: 12,
+    },
+    pressed: {
+        opacity: 0.7,
     },
 });
