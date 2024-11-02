@@ -6,14 +6,9 @@ import { FontAwesome } from '@expo/vector-icons';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { useLocalSearchParams, Stack } from 'expo-router';
-
-type OrderStatus =
-    | 'pick-up'
-    | 'on-the-way-to-laundry'
-    | 'laundrying'
-    | 'drying'
-    | 'on-the-way-to-user'
-    | 'completed';
+import { useAppSelector, useAppDispatch } from '@/store/hooks';
+import { updateOrderStatus } from '@/store/orderSlice';
+import type { OrderStatus } from '@/store/orderSlice';
 
 const ORDER_STEPS = [
     {
@@ -56,31 +51,26 @@ const ORDER_STEPS = [
 
 export default function OrderDetail() {
     const { id } = useLocalSearchParams();
+    const dispatch = useAppDispatch();
+    const order = useAppSelector(state => state.order.currentOrder);
     const colorScheme = useColorScheme();
     const tintColor = Colors[colorScheme ?? 'light'].tint;
     const borderColor = Colors[colorScheme ?? 'light'].border;
 
-    // Convert mockOrder to state
-    const [order, setOrder] = React.useState({
-        id,
-        status: 'laundrying' as OrderStatus,
-        items: [
-            { name: 'T-Shirt', quantity: 2, price: 5.99 },
-            { name: 'Pants', quantity: 1, price: 7.99 },
-        ],
-        total: 19.97,
-        estimatedDelivery: new Date(Date.now() + 2 * 60 * 60 * 1000),
-    });
-
-    const currentStep = ORDER_STEPS.findIndex(step => step.status === order.status);
+    const currentStep = ORDER_STEPS.findIndex(step => step.status === order?.status);
 
     // Handler for step clicks
     const handleStepPress = (newStatus: OrderStatus) => {
-        setOrder(prev => ({
-            ...prev,
-            status: newStatus
-        }));
+        dispatch(updateOrderStatus(newStatus));
     };
+
+    if (!order) {
+        return (
+            <ThemedView style={styles.container}>
+                <ThemedText>Order not found</ThemedText>
+            </ThemedView>
+        );
+    }
 
     return (
         <>
@@ -89,7 +79,7 @@ export default function OrderDetail() {
                 <ThemedView style={styles.header}>
                     <ThemedText style={styles.orderId}>Order #{order.id}</ThemedText>
                     <ThemedText style={styles.estimatedTime}>
-                        Estimated delivery: {order.estimatedDelivery.toLocaleTimeString()}
+                        Estimated delivery: {new Date(order.estimatedDelivery).toLocaleTimeString()}
                     </ThemedText>
                 </ThemedView>
 

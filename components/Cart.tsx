@@ -9,6 +9,8 @@ import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { updateQuantity } from '@/store/cartSlice';
 import { router } from 'expo-router';
 import { PaymentSelectorModal } from './PaymentSelectorModal';
+import { createOrder } from '@/store/orderSlice';
+import { clearCart } from '@/store/cartSlice';
 
 // Map of item types to icons
 const itemIcons: { [key: string]: keyof typeof FontAwesome.glyphMap } = {
@@ -31,24 +33,6 @@ const PAYMENT_OPTIONS = [
     { id: 'apple', name: 'Apple Pay', icon: 'apple' },
     { id: 'google', name: 'Google Pay', icon: 'google' },
 ] as const;
-
-// Add this type definition
-type MockOrder = {
-    id: string;
-    status: 'pick-up';
-    items: Array<{
-        id: string;
-        name: string;
-        type: string;
-        serviceType: string;
-        quantity: number;
-        price: number;
-    }>;
-    total: number;
-    paymentMethod: string;
-    createdAt: Date;
-    estimatedDelivery: Date;
-};
 
 export const Cart = () => {
     const dispatch = useAppDispatch();
@@ -73,35 +57,23 @@ export const Cart = () => {
         try {
             setIsCreatingOrder(true);
 
-            const mockOrder: MockOrder = {
+            const mockOrder = {
                 id: Math.random().toString(36).substring(2, 9),
-                status: 'pick-up',
+                status: 'pick-up' as const,
                 items: items,
                 total: total,
-                paymentMethod: selectedPayment,
-                createdAt: new Date(),
-                estimatedDelivery: new Date(Date.now() + 2 * 60 * 60 * 1000),
+                estimatedDelivery: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
             };
 
             // Simulate API call
             await new Promise(resolve => setTimeout(resolve, 1000));
 
-            // In real app: await createOrder(mockOrder);
-
-            // Clear cart (assuming you have a clearCart action)
+            dispatch(createOrder(mockOrder));
             // dispatch(clearCart());
 
-            router.push({
-                pathname: `/order/${mockOrder.id}`,
-                params: {
-                    total: mockOrder.total.toString(),
-                    estimatedDelivery: mockOrder.estimatedDelivery.toISOString(),
-                }
-            });
+            router.push(`/order/${mockOrder.id}`);
         } catch (error) {
-            // Handle error
             console.error('Failed to create order:', error);
-            // Show error message to user
         } finally {
             setIsCreatingOrder(false);
         }
