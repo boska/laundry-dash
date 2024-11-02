@@ -9,6 +9,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Drawer } from 'expo-router/drawer';
 import { ThemeProvider as ThemeContextProvider, useTheme } from '../ctx/ThemeContext';
 import Toast from 'react-native-toast-message';
+import { AuthProvider } from '@/ctx/AuthContext';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -97,7 +98,9 @@ export default function RootLayout() {
   return (
     <ThemeContextProvider>
       <Provider store={store}>
-        <NavigationContent />
+        <AuthProvider>
+          <NavigationContent />
+        </AuthProvider>
       </Provider>
       <Toast />
     </ThemeContextProvider>

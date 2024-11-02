@@ -1,92 +1,15 @@
-import { TextInput, StyleSheet, Pressable, ActivityIndicator, Image, ScrollView, KeyboardAvoidingView, Platform, View, Text } from 'react-native';
+import { TextInput, Image, StyleSheet, Pressable, ActivityIndicator, ScrollView, KeyboardAvoidingView, View, Text, Platform } from 'react-native';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { useState } from 'react';
-import { router } from 'expo-router';
-import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { Ionicons } from '@expo/vector-icons';
 import Toast from 'react-native-toast-message';
 import { getTranslation } from '@/constants/i18n';
 import { useLanguage } from '@/hooks/useLanguage';
-
-const createToastConfig = (colorScheme: string) => ({
-    error: (props: any) => (
-        <View style={{
-            width: '90%',
-            backgroundColor: Colors[colorScheme ?? 'light'].error || '#ff5f5f',
-            borderRadius: 12,
-            padding: 16,
-            flexDirection: 'row',
-            alignItems: 'center',
-            minHeight: 64,
-        }}>
-            <Ionicons
-                name="alert-circle"
-                size={24}
-                color="white"
-                style={{ marginRight: 12 }}
-            />
-            <View style={{ flex: 1 }}>
-                <Text style={{
-                    fontSize: 16,
-                    fontWeight: '600',
-                    color: 'white',
-                    marginBottom: 4,
-                }}>
-                    {props.text1}
-                </Text>
-                {props.text2 && (
-                    <Text style={{
-                        fontSize: 14,
-                        color: 'white',
-                        opacity: 0.9,
-                    }}>
-                        {props.text2}
-                    </Text>
-                )}
-            </View>
-        </View>
-    ),
-    success: (props: any) => (
-        <View style={{
-            width: '90%',
-            backgroundColor: Colors[colorScheme ?? 'light'].success || '#22c55e',
-            borderRadius: 12,
-            padding: 16,
-            flexDirection: 'row',
-            alignItems: 'center',
-            minHeight: 64,
-        }}>
-            <Ionicons
-                name="checkmark-circle"
-                size={24}
-                color="white"
-                style={{ marginRight: 12 }}
-            />
-            <View style={{ flex: 1 }}>
-                <Text style={{
-                    fontSize: 16,
-                    fontWeight: '600',
-                    color: 'white',
-                    marginBottom: 4,
-                }}>
-                    {props.text1}
-                </Text>
-                {props.text2 && (
-                    <Text style={{
-                        fontSize: 14,
-                        color: 'white',
-                        opacity: 0.9,
-                    }}>
-                        {props.text2}
-                    </Text>
-                )}
-            </View>
-        </View>
-    ),
-});
-
+import { useAuth } from '@/ctx/AuthContext';
+import { Colors } from '@/constants/Colors';
+import { router } from 'expo-router';
 const LoginScreen = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -97,6 +20,7 @@ const LoginScreen = () => {
     const theme = Colors[colorScheme ?? 'light'];
     const { currentLanguage } = useLanguage();
     const t = getTranslation(currentLanguage);
+    const { login } = useAuth();
 
     const validateEmail = (email: string) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -130,7 +54,15 @@ const LoginScreen = () => {
         setIsLoading(true);
 
         try {
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            await login(email, password);
+            Toast.show({
+                type: 'success',
+                text1: t.login.loginSuccess,
+                text2: t.login.welcomeBack,
+                position: 'bottom',
+                visibilityTime: 3000,
+            });
+        } catch (error) {
             Toast.show({
                 type: 'error',
                 text1: t.login.loginFailed,
@@ -335,11 +267,6 @@ const LoginScreen = () => {
                     </ThemedView>
                 </ThemedView>
             </ScrollView>
-            <Toast
-                config={createToastConfig(colorScheme ?? 'light')}
-                topOffset={50}
-                bottomOffset={40}
-            />
         </KeyboardAvoidingView>
     );
 }
