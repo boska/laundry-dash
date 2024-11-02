@@ -19,7 +19,7 @@ const initialState: CartState = {
         { id: '1', name: 'Instant', price: 300, quantity: 1, serviceType: 'basic', type: 'pants' },
         { id: '2', name: 'Pet Wash', price: 200, quantity: 0, serviceType: 'premium', type: 'animal' },
     ],
-    total: 100,
+    total: 300,
 };
 
 interface UpdateQuantityPayload {

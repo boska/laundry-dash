@@ -292,10 +292,6 @@ const styles = StyleSheet.create({
         minWidth: 32,
         alignItems: 'center',
     },
-    itemQuantity: {
-        fontSize: 14,
-        fontWeight: '600',
-    },
     paymentRow: {
         flexDirection: 'row',
         alignItems: 'center',
