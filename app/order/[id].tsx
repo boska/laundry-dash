@@ -3,11 +3,10 @@ import { StyleSheet, ScrollView, Pressable } from 'react-native';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { FontAwesome } from '@expo/vector-icons';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
 import { useLocalSearchParams, Stack } from 'expo-router';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { updateOrderStatus } from '@/store/orderSlice';
+import { useTheme } from '@/ctx/ThemeContext';
 import type { OrderStatus } from '@/store/orderSlice';
 
 const ORDER_STEPS = [
@@ -53,13 +52,10 @@ export default function OrderDetail() {
     const { id } = useLocalSearchParams();
     const dispatch = useAppDispatch();
     const order = useAppSelector(state => state.order.currentOrder);
-    const colorScheme = useColorScheme();
-    const tintColor = Colors[colorScheme ?? 'light'].tint;
-    const borderColor = Colors[colorScheme ?? 'light'].border;
+    const { colors } = useTheme();
 
     const currentStep = ORDER_STEPS.findIndex(step => step.status === order?.status);
 
-    // Handler for step clicks
     const handleStepPress = (newStatus: OrderStatus) => {
         dispatch(updateOrderStatus(newStatus));
     };
@@ -97,7 +93,7 @@ export default function OrderDetail() {
                                     style={[
                                         styles.step,
                                         isCurrentStep && {
-                                            backgroundColor: Colors[colorScheme ?? 'light'].background,
+                                            backgroundColor: colors.background,
                                         }
                                     ]}
                                 >
@@ -106,8 +102,8 @@ export default function OrderDetail() {
                                             style={[
                                                 styles.stepIcon,
                                                 {
-                                                    backgroundColor: isCompleted ? tintColor : 'transparent',
-                                                    borderColor,
+                                                    backgroundColor: isCompleted ? colors.tint : 'transparent',
+                                                    borderColor: colors.border,
                                                     borderWidth: isCompleted ? 0 : 1,
                                                 }
                                             ]}
@@ -115,7 +111,7 @@ export default function OrderDetail() {
                                             <FontAwesome
                                                 name={step.icon}
                                                 size={20}
-                                                color={isCompleted ? '#fff' : Colors[colorScheme ?? 'light'].text}
+                                                color={isCompleted ? '#fff' : colors.text}
                                             />
                                         </ThemedView>
                                     </ThemedView>
@@ -138,7 +134,7 @@ export default function OrderDetail() {
                     })}
                 </ThemedView>
 
-                <ThemedView style={[styles.itemsContainer, { borderColor }]}>
+                <ThemedView style={[styles.itemsContainer, { borderColor: colors.border }]}>
                     <ThemedText style={styles.itemsTitle}>Order Items</ThemedText>
                     {order.items.map((item, index) => (
                         <ThemedView key={index} style={styles.itemRow}>
@@ -146,7 +142,7 @@ export default function OrderDetail() {
                             <ThemedText>${(item.price * item.quantity).toFixed(2)}</ThemedText>
                         </ThemedView>
                     ))}
-                    <ThemedView style={[styles.totalRow, { borderTopColor: borderColor }]}>
+                    <ThemedView style={[styles.totalRow, { borderTopColor: colors.border }]}>
                         <ThemedText style={styles.totalLabel}>Total</ThemedText>
                         <ThemedText style={styles.totalAmount}>${order.total}</ThemedText>
                     </ThemedView>
