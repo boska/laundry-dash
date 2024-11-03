@@ -20,7 +20,7 @@ SplashScreen.preventAutoHideAsync();
 
 const DRAWER_SCREENS = [
   {
-    name: '(tabs)',
+    name: '(tabs)' as const,
     options: {
       headerShown: true,
       title: 'LaundryDash',
@@ -28,7 +28,7 @@ const DRAWER_SCREENS = [
     }
   },
   {
-    name: 'settings',
+    name: 'settings' as const,
     options: {
       headerShown: true,
       title: 'Settings',
@@ -36,7 +36,7 @@ const DRAWER_SCREENS = [
     }
   },
   {
-    name: 'chatroom',
+    name: 'chatroom' as const,
     options: {
       headerShown: true,
       title: 'Support',
@@ -44,7 +44,7 @@ const DRAWER_SCREENS = [
     }
   },
   {
-    name: 'order/[id]',
+    name: 'order/[id]' as const,
     options: {
       headerShown: true,
       title: '',
@@ -52,7 +52,7 @@ const DRAWER_SCREENS = [
     }
   },
   {
-    name: 'map',
+    name: 'map' as const,
     options: {
       headerShown: true,
       title: '',
@@ -66,14 +66,7 @@ function NavigationContent() {
   const [showLoginModal, setShowLoginModal] = useState(false);
 
   const getDrawerItemVisibility = (routeName: string) => {
-    const visibleRoutes = [
-      '(tabs)',
-      'settings',
-      'chatroom',
-      'map',
-      'order/[id]',
-    ];
-    return visibleRoutes.includes(routeName) ? 'flex' : 'none';
+    return DRAWER_SCREENS.some(screen => screen.name === routeName) ? 'flex' : 'none';
   };
 
   return (
