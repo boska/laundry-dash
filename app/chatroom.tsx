@@ -16,12 +16,11 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
 import { FontAwesome } from '@expo/vector-icons';
 import { useAppSelector, useAppDispatch } from '../store/hooks';
 import { addMessage, setMessages, setInputText, clearInputText } from '../store/chatroomSlice';
 import { NoData } from '@/components/NoData';
+import { useTheme } from '@/ctx/ThemeContext';
 
 interface Message {
     id: string;
@@ -32,27 +31,26 @@ interface Message {
 
 const inputAccessoryViewID = 'uniqueID';
 
-// Add this color utility at the top of the file
-const adjustOpacity = (hexColor: string, opacity: number): string => {
+// Update adjustOpacity to use any color
+const adjustOpacity = (color: string, opacity: number): string => {
     // Remove # if present
-    const hex = hexColor.replace('#', '');
+    const hex = color.replace('#', '');
     const r = parseInt(hex.substring(0, 2), 16);
     const g = parseInt(hex.substring(2, 4), 16);
     const b = parseInt(hex.substring(4, 6), 16);
     return `rgba(${r}, ${g}, ${b}, ${opacity})`;
 };
 
-// Add this function before renderEmptyChat
-const LogoOptions = ({ colorScheme }: { colorScheme: 'light' | 'dark' | null }) => {
-    const tintColor = Colors[colorScheme ?? 'light'].tint;
+const LogoOptions = () => {
+    const { colors } = useTheme();
     return (
         <View style={styles.logoOptionsContainer}>
             <View style={styles.logoOption}>
-                <View style={[styles.logoContainer, { backgroundColor: adjustOpacity(tintColor, 0.08) }]}>
+                <View style={[styles.logoContainer, { backgroundColor: adjustOpacity(colors.tint, 0.08) }]}>
                     <FontAwesome
                         name="shopping-basket"
                         size={45}
-                        color={tintColor}
+                        color={colors.tint}
                     />
                 </View>
             </View>
@@ -60,8 +58,8 @@ const LogoOptions = ({ colorScheme }: { colorScheme: 'light' | 'dark' | null }) 
     );
 };
 
-// Add this animation component before renderEmptyChat
-const BouncingArrow = ({ color }: { color: string }) => {
+const BouncingArrow = () => {
+    const { colors } = useTheme();
     const bounceAnim = useRef(new Animated.Value(0)).current;
 
     useEffect(() => {
@@ -91,7 +89,7 @@ const BouncingArrow = ({ color }: { color: string }) => {
             <FontAwesome
                 name="arrow-down"
                 size={20}
-                color={color}
+                color={colors.text}
                 style={styles.arrowIcon}
             />
         </Animated.View>
@@ -105,7 +103,7 @@ export default function ChatRoom() {
     const [isKeyboardVisible, setKeyboardVisible] = useState(false);
     const insets = useSafeAreaInsets();
     const scrollViewRef = useRef<ScrollView>(null);
-    const colorScheme = useColorScheme();
+    const { colors, isDark } = useTheme();
     const [keyboardHeight, setKeyboardHeight] = useState(0);
 
     useEffect(() => {
@@ -142,12 +140,11 @@ export default function ChatRoom() {
     };
 
     const renderMessage = (message: Message) => {
-        const tintColor = Colors[colorScheme ?? 'light'].tint;
         const bgColor = message.sender === 'user'
-            ? tintColor
-            : colorScheme === 'dark'
+            ? colors.tint
+            : isDark
                 ? '#2C2C2E'
-                : adjustOpacity(tintColor, 0.1);
+                : adjustOpacity(colors.tint, 0.1);
 
         return (
             <View
@@ -164,7 +161,7 @@ export default function ChatRoom() {
                         {
                             color: message.sender === 'user'
                                 ? '#ffffff'
-                                : Colors[colorScheme ?? 'light'].text
+                                : colors.text
                         }
                     ]}
                 >
@@ -189,7 +186,7 @@ export default function ChatRoom() {
                 {messages.length > 0
                     ? messages.map(renderMessage)
                     : <NoData
-                        colorScheme={colorScheme as 'light' | 'dark' | null}
+                        colorScheme={isDark ? 'dark' : 'light'}
                         icon="chatbubble-ellipses-outline"
                         title="No messages yet"
                         subtitle="Start a conversation by typing a message below"
@@ -203,7 +200,7 @@ export default function ChatRoom() {
                     paddingBottom: isKeyboardVisible
                         ? keyboardHeight + 8
                         : Math.max(insets.bottom, 8),
-                    backgroundColor: Colors[colorScheme ?? 'light'].background,
+                    backgroundColor: colors.background,
                     borderTopColor: 'transparent'
                 }
             ]}>
@@ -211,22 +208,22 @@ export default function ChatRoom() {
                     style={[
                         styles.textInput,
                         {
-                            backgroundColor: adjustOpacity(Colors[colorScheme ?? 'light'].tint, 0.1),
-                            color: Colors[colorScheme ?? 'light'].text,
+                            backgroundColor: adjustOpacity(colors.tint, 0.1),
+                            color: colors.text,
                         }
                     ]}
                     inputAccessoryViewID={inputAccessoryViewID}
                     onChangeText={(text) => dispatch(setInputText(text))}
                     value={inputText}
                     placeholder="Type a message..."
-                    placeholderTextColor={Colors[colorScheme ?? 'light'].tabIconDefault}
+                    placeholderTextColor={colors.tabIconDefault}
                     multiline
                 />
                 <Pressable onPress={sendMessage} style={styles.sendButton}>
                     <Ionicons
                         name="send"
                         size={24}
-                        color={Colors[colorScheme ?? 'light'].tint}
+                        color={colors.tint}
                     />
                 </Pressable>
             </KeyboardAvoidingView>
