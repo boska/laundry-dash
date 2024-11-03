@@ -1,4 +1,3 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect, useState } from 'react';
@@ -9,12 +8,11 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Drawer } from 'expo-router/drawer';
 import { ThemeProvider as ThemeContextProvider, useTheme } from '../ctx/ThemeContext';
 import Toast from 'react-native-toast-message';
-import { AuthProvider, useAuth } from '@/ctx/AuthContext';
+import { AuthProvider } from '@/ctx/AuthContext';
 import { DrawerButton } from '@/components/navigation/DrawerButton';
 import { Modal, Pressable } from 'react-native';
 import LoginScreen from './login';
 import { FontAwesome } from '@expo/vector-icons';
-import { Colors } from '@/constants/Colors';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -62,7 +60,7 @@ const DRAWER_SCREENS = [
 ] as const;
 
 function NavigationContent() {
-  const { theme } = useTheme();
+  const { colors } = useTheme();
   const [showLoginModal, setShowLoginModal] = useState(false);
 
   const getDrawerItemVisibility = (routeName: string) => {
@@ -70,47 +68,45 @@ function NavigationContent() {
   };
 
   return (
-    <ThemeProvider value={theme === 'dark' ? DarkTheme : DefaultTheme}>
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <Drawer
-          screenOptions={({ route }) => ({
-            headerLeft: () => <DrawerButton />,
-            headerRight: () => (
-              <Pressable
-                onPress={() => setShowLoginModal(true)}
-                style={{ marginRight: 16 }}
-              >
-                <FontAwesome
-                  name="user"
-                  size={24}
-                  color={Colors[theme ?? 'light'].tint}
-                />
-              </Pressable>
-            ),
-            drawerItemStyle: {
-              display: getDrawerItemVisibility(route.name)
-            }
-          })}
-        >
-          {DRAWER_SCREENS.map((screen) => (
-            <Drawer.Screen
-              key={screen.name}
-              name={screen.name}
-              options={screen.options}
-            />
-          ))}
-        </Drawer>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <Drawer
+        screenOptions={({ route }) => ({
+          headerLeft: () => <DrawerButton />,
+          headerRight: () => (
+            <Pressable
+              onPress={() => setShowLoginModal(true)}
+              style={{ marginRight: 16 }}
+            >
+              <FontAwesome
+                name="user"
+                size={24}
+                color={colors.tint}
+              />
+            </Pressable>
+          ),
+          drawerItemStyle: {
+            display: getDrawerItemVisibility(route.name)
+          }
+        })}
+      >
+        {DRAWER_SCREENS.map((screen) => (
+          <Drawer.Screen
+            key={screen.name}
+            name={screen.name}
+            options={screen.options}
+          />
+        ))}
+      </Drawer>
 
-        <Modal
-          visible={showLoginModal}
-          animationType="slide"
-          presentationStyle="pageSheet"
-          onRequestClose={() => setShowLoginModal(false)}
-        >
-          <LoginScreen onClose={() => setShowLoginModal(false)} />
-        </Modal>
-      </GestureHandlerRootView>
-    </ThemeProvider>
+      <Modal
+        visible={showLoginModal}
+        animationType="slide"
+        presentationStyle="pageSheet"
+        onRequestClose={() => setShowLoginModal(false)}
+      >
+        <LoginScreen onClose={() => setShowLoginModal(false)} />
+      </Modal>
+    </GestureHandlerRootView>
   );
 }
 

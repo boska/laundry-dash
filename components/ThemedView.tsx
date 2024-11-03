@@ -1,19 +1,17 @@
-import { View } from 'react-native';
-import { useTheme } from '../ctx/ThemeContext';
-import { Colors } from '@/constants/Colors';
+import { View, ViewProps } from 'react-native';
+import { useTheme } from '@/ctx/ThemeContext';
 
-export function ThemedView(props: React.ComponentProps<typeof View>) {
-  const { theme } = useTheme();
+export function ThemedView(props: ViewProps) {
+  const { colors } = useTheme();
+  const { style, ...otherProps } = props;
 
   return (
     <View
-      {...props}
       style={[
-        {
-          backgroundColor: Colors[theme ?? 'light'].background,
-        },
-        props.style,
+        { backgroundColor: colors.background },
+        style
       ]}
+      {...otherProps}
     />
   );
 }

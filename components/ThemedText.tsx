@@ -1,19 +1,17 @@
-import { Text } from 'react-native';
-import { useTheme } from '../ctx/ThemeContext';
-import { Colors } from '@/constants/Colors';
+import { Text, TextProps } from 'react-native';
+import { useTheme } from '@/ctx/ThemeContext';
 
-export function ThemedText(props: React.ComponentProps<typeof Text>) {
-  const { theme } = useTheme();
+export function ThemedText(props: TextProps) {
+  const { colors } = useTheme();
+  const { style, ...otherProps } = props;
 
   return (
     <Text
-      {...props}
       style={[
-        {
-          color: Colors[theme ?? 'light'].text,
-        },
-        props.style,
+        { color: colors.text },
+        style
       ]}
+      {...otherProps}
     />
   );
 }

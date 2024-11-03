@@ -1,13 +1,16 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { ColorSchemeName, useColorScheme } from 'react-native';
+import { useColorScheme } from 'react-native';
+import { Colors } from '@/constants/Colors';
+import { DarkTheme, DefaultTheme, ThemeProvider as NavigationThemeProvider } from '@react-navigation/native';
 
 type ThemeMode = 'system' | 'light' | 'dark';
 
 type ThemeContextType = {
     themeMode: ThemeMode;
-    theme: ColorSchemeName;
+    isDark: boolean;
     setThemeMode: (mode: ThemeMode) => void;
+    colors: typeof Colors['light'] | typeof Colors['dark'];
 };
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -40,18 +43,22 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         }
     };
 
-    // Calculate actual theme based on mode
-    const theme: ColorSchemeName = themeMode === 'system'
-        ? systemTheme
-        : themeMode;
+    const isDark = themeMode === 'system'
+        ? systemTheme === 'dark'
+        : themeMode === 'dark';
+
+    const colors = Colors[isDark ? 'dark' : 'light'];
 
     return (
         <ThemeContext.Provider value={{
             themeMode,
-            theme,
-            setThemeMode: handleSetThemeMode
+            isDark,
+            setThemeMode: handleSetThemeMode,
+            colors
         }}>
-            {children}
+            <NavigationThemeProvider value={isDark ? DarkTheme : DefaultTheme}>
+                {children}
+            </NavigationThemeProvider>
         </ThemeContext.Provider>
     );
 }
