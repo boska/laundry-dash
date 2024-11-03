@@ -8,7 +8,6 @@ import Toast from 'react-native-toast-message';
 import { getTranslation } from '@/constants/i18n';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useAuth } from '@/ctx/AuthContext';
-import { Colors } from '@/constants/Colors';
 import { router } from 'expo-router';
 
 interface LoginScreenProps {
@@ -21,8 +20,7 @@ const LoginScreen = ({ onClose }: LoginScreenProps) => {
     const [errors, setErrors] = useState({ email: '', password: '' });
     const [isLoading, setIsLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
-    const { theme: themeMode } = useTheme();
-    const theme = Colors[themeMode ?? 'light'];
+    const { colors } = useTheme();
     const { currentLanguage } = useLanguage();
     const t = getTranslation(currentLanguage);
     const { login, loginWithGoogle, loginWithFacebook } = useAuth();
@@ -121,7 +119,7 @@ const LoginScreen = ({ onClose }: LoginScreenProps) => {
 
     return (
         <KeyboardAvoidingView
-            style={[styles.container, { backgroundColor: theme.background }]}
+            style={[styles.container, { backgroundColor: colors.background }]}
             behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         >
             <View style={styles.handleBar} />
@@ -132,7 +130,7 @@ const LoginScreen = ({ onClose }: LoginScreenProps) => {
             >
                 <View style={styles.header}>
                     <ThemedText style={styles.title}>{t.login.welcomeBack}</ThemedText>
-                    <ThemedText style={[styles.subtitle, { color: theme.secondary.text }]}>
+                    <ThemedText style={[styles.subtitle, { color: colors.secondary.text }]}>
                         {t.login.chooseHowToLogin}
                     </ThemedText>
                 </View>
@@ -141,8 +139,8 @@ const LoginScreen = ({ onClose }: LoginScreenProps) => {
                     <ThemedView style={styles.socialButtonsContainer}>
                         <Pressable
                             style={[styles.socialButton, {
-                                backgroundColor: theme.cardBackground,
-                                borderColor: theme.border
+                                backgroundColor: colors.cardBackground,
+                                borderColor: colors.border
                             }]}
                             onPress={() => handleSocialLogin('Google')}
                             disabled={isLoading}
@@ -158,8 +156,8 @@ const LoginScreen = ({ onClose }: LoginScreenProps) => {
 
                         <Pressable
                             style={[styles.socialButton, {
-                                backgroundColor: theme.cardBackground,
-                                borderColor: theme.border
+                                backgroundColor: colors.cardBackground,
+                                borderColor: colors.border
                             }]}
                             onPress={() => handleSocialLogin('Facebook')}
                             disabled={isLoading}
@@ -175,11 +173,11 @@ const LoginScreen = ({ onClose }: LoginScreenProps) => {
                     </ThemedView>
 
                     <ThemedView style={styles.dividerContainer}>
-                        <ThemedView style={[styles.divider, { backgroundColor: theme.border }]} />
-                        <ThemedText style={[styles.orText, { color: theme.secondary.text }]}>
+                        <ThemedView style={[styles.divider, { backgroundColor: colors.border }]} />
+                        <ThemedText style={[styles.orText, { color: colors.secondary.text }]}>
                             {t.login.orContinueWithEmail}
                         </ThemedText>
-                        <ThemedView style={[styles.divider, { backgroundColor: theme.border }]} />
+                        <ThemedView style={[styles.divider, { backgroundColor: colors.border }]} />
                     </ThemedView>
 
                     <ThemedView style={styles.form}>
@@ -189,9 +187,9 @@ const LoginScreen = ({ onClose }: LoginScreenProps) => {
                                 style={[
                                     styles.input,
                                     {
-                                        color: theme.text,
-                                        backgroundColor: theme.inputBackground,
-                                        borderColor: errors.email ? theme.error : theme.border,
+                                        color: colors.text,
+                                        backgroundColor: colors.inputBackground,
+                                        borderColor: errors.email ? colors.error : colors.border,
                                     }
                                 ]}
                                 value={email}
@@ -200,12 +198,14 @@ const LoginScreen = ({ onClose }: LoginScreenProps) => {
                                     if (errors.email) setErrors(prev => ({ ...prev, email: '' }));
                                 }}
                                 placeholder={t.login.emailPlaceholder}
-                                placeholderTextColor={theme.secondary.text}
+                                placeholderTextColor={colors.secondary.text}
                                 autoCapitalize="none"
                                 keyboardType="email-address"
                             />
                             {errors.email ? (
-                                <ThemedText style={styles.errorText}>{errors.email}</ThemedText>
+                                <ThemedText style={[styles.errorText, { color: colors.error }]}>
+                                    {errors.email}
+                                </ThemedText>
                             ) : null}
                         </ThemedView>
 
@@ -216,11 +216,11 @@ const LoginScreen = ({ onClose }: LoginScreenProps) => {
                                     style={[
                                         styles.passwordInput,
                                         {
-                                            color: theme.text,
-                                            backgroundColor: theme.inputBackground,
+                                            color: colors.text,
+                                            backgroundColor: colors.inputBackground,
                                             borderColor: errors.password
-                                                ? theme.error
-                                                : theme.border,
+                                                ? colors.error
+                                                : colors.border,
                                         }
                                     ]}
                                     value={password}
@@ -229,7 +229,7 @@ const LoginScreen = ({ onClose }: LoginScreenProps) => {
                                         if (errors.password) setErrors(prev => ({ ...prev, password: '' }));
                                     }}
                                     placeholder={t.login.passwordPlaceholder}
-                                    placeholderTextColor={theme.secondary.text}
+                                    placeholderTextColor={colors.secondary.text}
                                     secureTextEntry={!showPassword}
                                 />
                                 <Pressable
@@ -239,7 +239,7 @@ const LoginScreen = ({ onClose }: LoginScreenProps) => {
                                     <Ionicons
                                         name={showPassword ? 'eye-off' : 'eye'}
                                         size={24}
-                                        color={theme.secondary.text}
+                                        color={colors.secondary.text}
                                     />
                                 </Pressable>
                             </ThemedView>
@@ -252,7 +252,7 @@ const LoginScreen = ({ onClose }: LoginScreenProps) => {
                             style={styles.forgotPassword}
                             onPress={() => router.push('/')}
                         >
-                            <ThemedText style={[styles.link, { color: theme.tint }]}>
+                            <ThemedText style={[styles.link, { color: colors.tint }]}>
                                 {t.login.forgotPassword}
                             </ThemedText>
                         </Pressable>
@@ -260,20 +260,16 @@ const LoginScreen = ({ onClose }: LoginScreenProps) => {
                         <Pressable
                             style={[
                                 styles.button,
-                                { backgroundColor: theme.tint },
-                                (!isFormValid || isLoading) && {
-                                    opacity: 0.5
-                                }
+                                { backgroundColor: colors.tint },
+                                (!isFormValid || isLoading) && { opacity: 0.5 }
                             ]}
                             onPress={handleLogin}
                             disabled={!isFormValid || isLoading}
                         >
                             {isLoading ? (
-                                <ActivityIndicator color={theme.background} />
+                                <ActivityIndicator color={colors.background} />
                             ) : (
-                                <ThemedText style={[styles.buttonText, {
-                                    color: theme.background
-                                }]}>
+                                <ThemedText style={[styles.buttonText, { color: colors.background }]}>
                                     {t.login.logIn}
                                 </ThemedText>
                             )}
@@ -281,11 +277,11 @@ const LoginScreen = ({ onClose }: LoginScreenProps) => {
                     </ThemedView>
 
                     <ThemedView style={styles.footer}>
-                        <ThemedText style={{ color: theme.text }}>
+                        <ThemedText style={{ color: colors.text }}>
                             {t.login.noAccount}{' '}
                         </ThemedText>
                         <Pressable onPress={() => router.push('/signup')}>
-                            <ThemedText style={[styles.link, { color: theme.tint }]}>
+                            <ThemedText style={[styles.link, { color: colors.tint }]}>
                                 {t.login.signUp}
                             </ThemedText>
                         </Pressable>

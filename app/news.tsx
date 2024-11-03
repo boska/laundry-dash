@@ -3,7 +3,6 @@ import { StyleSheet, FlatList, ActivityIndicator, RefreshControl, Image, Linking
 import Markdown from 'react-native-markdown-display';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
-import { Colors } from '@/constants/Colors';
 import { useTheme } from '@/ctx/ThemeContext';
 import { NoData } from '@/components/NoData';
 
@@ -65,7 +64,7 @@ export default function PostListScreen({ owner = 'boska', repo = 'laundry-dash' 
     const [commits, setCommits] = useState<Commit[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isRefreshing, setIsRefreshing] = useState(false);
-    const { theme } = useTheme();
+    const { colors, isDark } = useTheme();
 
     const fetchCommitMessages = async () => {
         const url = `https://api.github.com/repos/${owner}/${repo}/commits`;
@@ -116,7 +115,7 @@ export default function PostListScreen({ owner = 'boska', repo = 'laundry-dash' 
     if (isLoading) {
         return (
             <ThemedView style={styles.loadingContainer}>
-                <ActivityIndicator size="large" color={Colors[theme ?? 'light'].tint} />
+                <ActivityIndicator size="large" color={colors.tint} />
             </ThemedView>
         );
     }
@@ -124,7 +123,7 @@ export default function PostListScreen({ owner = 'boska', repo = 'laundry-dash' 
     if (!commits.length) {
         return (
             <NoData
-                colorScheme={theme ?? 'light'}
+                colorScheme={isDark ? 'dark' : 'light'}
                 icon="git-commit-outline"
                 title="No commits found"
                 subtitle="Pull down to refresh and check for new commits"
@@ -136,21 +135,21 @@ export default function PostListScreen({ owner = 'boska', repo = 'laundry-dash' 
         const relativeTime = getRelativeTime(item.commit.author.date);
         const markdownStyles = {
             body: {
-                color: Colors[theme ?? 'light'].text,
+                color: colors.text,
                 fontSize: 16,
                 lineHeight: 22,
                 fontWeight: '500',
             },
             link: {
-                color: Colors[theme ?? 'light'].tint,
+                color: colors.tint,
             },
             code_inline: {
-                backgroundColor: Colors[theme ?? 'light'].inputBackground,
+                backgroundColor: colors.inputBackground,
                 padding: 4,
                 borderRadius: 4,
             },
             code_block: {
-                backgroundColor: Colors[theme ?? 'light'].inputBackground,
+                backgroundColor: colors.inputBackground,
                 padding: 8,
                 borderRadius: 8,
                 marginVertical: 8,
@@ -171,7 +170,7 @@ export default function PostListScreen({ owner = 'boska', repo = 'laundry-dash' 
                 <ThemedView
                     style={[
                         styles.commitItem,
-                        { backgroundColor: Colors[theme ?? 'light'].cardBackground }
+                        { backgroundColor: colors.cardBackground }
                     ]}
                 >
                     <ThemedView style={[styles.authorContainer, { backgroundColor: 'transparent' }]}>
@@ -207,7 +206,7 @@ export default function PostListScreen({ owner = 'boska', repo = 'laundry-dash' 
                     <RefreshControl
                         refreshing={isRefreshing}
                         onRefresh={onRefresh}
-                        tintColor={Colors[theme ?? 'light'].tint}
+                        tintColor={colors.tint}
                     />
                 }
                 ItemSeparatorComponent={() => <ThemedView style={styles.separator} />}

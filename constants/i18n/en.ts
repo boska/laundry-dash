@@ -44,8 +44,8 @@ export default {
         startMessage: 'Start your laundry service today'
     },
     login: {
-        welcomeBack: 'Welcome back!',
-        chooseHowToLogin: 'Choose how you want to log in',
+        welcomeBack: 'Log In',
+        chooseHowToLogin: 'To prevent data abuse',
         continueWithGoogle: 'Continue with Google',
         continueWithFacebook: 'Continue with Facebook',
         orContinueWithEmail: 'Or continue with email',
