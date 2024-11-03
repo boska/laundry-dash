@@ -51,6 +51,14 @@ const DRAWER_SCREENS = [
       drawerLabel: 'Orders',
     }
   },
+  {
+    name: 'map',
+    options: {
+      headerShown: true,
+      title: '',
+      drawerLabel: 'Map',
+    }
+  },
 ] as const;
 
 function NavigationContent() {
@@ -62,6 +70,7 @@ function NavigationContent() {
       '(tabs)',
       'settings',
       'chatroom',
+      'map',
       'order/[id]',
     ];
     return visibleRoutes.includes(routeName) ? 'flex' : 'none';
