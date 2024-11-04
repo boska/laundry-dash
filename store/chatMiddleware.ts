@@ -12,6 +12,19 @@ const mockResponses: { [key: string]: string } = {
     'time': 'We typically complete orders within 24 hours. Would you like to schedule a pickup?',
 };
 
+// Introduction message that will be sent automatically
+const introductionMessage = {
+    id: 'intro-1',
+    text: "👋 Welcome to Laundry Dash Support! I'm your virtual assistant. I can help you with:\n\n" +
+        "• Pricing information\n" +
+        "• Pickup scheduling\n" +
+        "• Delivery status\n" +
+        "• Service questions\n\n" +
+        "How can I assist you today?",
+    sender: 'other',
+    timestamp: Date.now()
+};
+
 // Helper function to get a response with some delay
 const getDelayedResponse = (text: string): Promise<string> => {
     // Default response if no matching keywords found
@@ -34,9 +47,19 @@ const getDelayedResponse = (text: string): Promise<string> => {
     });
 };
 
+let hasShownIntroduction = false;
+
 export const chatMiddleware: Middleware<{}, RootState> = (store) => (next) => async (action) => {
     // First, let the action go through
     const result = next(action);
+
+    // Show introduction message when chat is cleared or first loaded
+    if (action.type === '@@INIT') {
+        hasShownIntroduction = true;
+        setTimeout(() => {
+            store.dispatch(addMessage(introductionMessage));
+        }, 500); // Small delay for better UX
+    }
 
     // If it's an addMessage action with a user message
     if (action.type === addMessage.type && action.payload.sender === 'user') {

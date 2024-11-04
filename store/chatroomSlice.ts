@@ -15,7 +15,20 @@ interface ChatroomState {
 }
 
 const initialState: ChatroomState = {
-    messages: [],
+    messages: [
+        {
+            id: 'intro-1',
+            text: "Hi, I'm Yang Lee! 👋\n\n" +
+                "I'm here to help you with:\n" +
+                "• iOS & Android & Web\n" +
+                "• Elegant UX\n" +
+                "• RWD\n" +
+                "• Realtime\n\n" +
+                "How can I assist you today?",
+            sender: 'other',
+            timestamp: Date.now()
+        }
+    ],
     isLoading: false,
     error: null,
     inputText: '',
