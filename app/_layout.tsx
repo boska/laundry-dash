@@ -57,6 +57,14 @@ const DRAWER_SCREENS = [
       drawerLabel: 'Map',
     }
   },
+  {
+    name: 'blog' as const,
+    options: {
+      headerShown: true,
+      title: 'Blog',
+      drawerLabel: 'Blog',
+    }
+  }
 ] as const;
 
 function NavigationContent() {

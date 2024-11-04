@@ -1,6 +1,6 @@
 import { useLocalSearchParams, useNavigation } from 'expo-router';
 import { useEffect } from 'react';
-import PostListScreen from '../news';
+import GithubFeed from '@/components/GithubFeed';
 
 export default function PostsScreen() {
     const { slug } = useLocalSearchParams<{ slug: string }>();
@@ -18,6 +18,6 @@ export default function PostsScreen() {
     }, [owner, repo, navigation]);
 
     return (
-        <PostListScreen owner={owner} repo={repo} />
+        <GithubFeed owner={owner} repo={repo} />
     );
 }

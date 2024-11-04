@@ -55,12 +55,12 @@ function getRelativeTime(date: string) {
     return `${diffInYears} year${diffInYears === 1 ? '' : 's'} ago`;
 }
 
-interface PostListScreenProps {
+interface GithubFeedProps {
     owner?: string;
     repo?: string;
 }
 
-export default function PostListScreen({ owner = 'boska', repo = 'laundry-dash' }: PostListScreenProps) {
+export default function GithubFeed({ owner = 'facebook', repo = 'react' }: GithubFeedProps) {
     const [commits, setCommits] = useState<Commit[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isRefreshing, setIsRefreshing] = useState(false);
