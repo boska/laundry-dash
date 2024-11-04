@@ -8,7 +8,6 @@ import {
     Pressable,
     Keyboard,
 } from 'react-native';
-import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -16,6 +15,7 @@ import { useAppSelector, useAppDispatch } from '../store/hooks';
 import { addMessage, setInputText, clearInputText } from '../store/chatroomSlice';
 import { NoData } from '@/components/NoData';
 import { useTheme } from '@/ctx/ThemeContext';
+import Markdown from 'react-native-markdown-display';
 
 interface Message {
     id: string;
@@ -81,8 +81,49 @@ export default function ChatRoom() {
 
     const renderMessage = (message: Message) => {
         const bgColor = message.sender === 'user'
-            ? colors.tint
-            : colors.cardBackground;
+            ? colors.cardBackground
+            : colors.background;
+
+        const textColor = colors.text;
+
+        const markdownStyles = {
+            body: {
+                color: textColor,
+                fontSize: 16,
+                lineHeight: 22,
+                fontWeight: '500',
+            },
+            link: {
+                color: colors.tint,
+            },
+            code_inline: {
+                backgroundColor: colors.inputBackground,
+                padding: 4,
+                borderRadius: 4,
+            },
+            code_block: {
+                backgroundColor: colors.inputBackground,
+                padding: 8,
+                borderRadius: 8,
+                marginVertical: 8,
+            },
+            bullet_list: {
+                marginVertical: 8,
+            },
+            paragraph: {
+                marginVertical: 0,
+                color: textColor,
+            },
+            text: {
+                color: textColor,
+            },
+            list_item: {
+                color: textColor,
+            },
+            ordered_list: {
+                color: textColor,
+            },
+        };
 
         return (
             <View
@@ -93,18 +134,9 @@ export default function ChatRoom() {
                     { backgroundColor: bgColor }
                 ]}
             >
-                <ThemedText
-                    style={[
-                        styles.messageText,
-                        {
-                            color: message.sender === 'user'
-                                ? '#ffffff'
-                                : colors.text
-                        }
-                    ]}
-                >
+                <Markdown style={markdownStyles as any}>
                     {message.text}
-                </ThemedText>
+                </Markdown>
             </View>
         );
     };
