@@ -8,6 +8,7 @@ import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { updateOrderStatus } from '@/store/orderSlice';
 import { useTheme } from '@/ctx/ThemeContext';
 import type { OrderStatus } from '@/store/orderSlice';
+import { Cart } from '@/components/Cart';
 
 const ORDER_STEPS = [
     {
@@ -62,9 +63,7 @@ export default function OrderDetail() {
 
     if (!order) {
         return (
-            <ThemedView style={styles.container}>
-                <ThemedText>Order not found</ThemedText>
-            </ThemedView>
+            <Cart />
         );
     }
 
