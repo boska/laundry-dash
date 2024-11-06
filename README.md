@@ -1,6 +1,15 @@
 # Welcome to Laundry Dash
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+ It's experimental project for learning how to build mobile apps with React Native. But it's also will be use by a local laundry service based in Hualien, Taiwan
+
+ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+
+## Screenshot
+
+<p float="left">
+  <img src="./design/order.png" width="300" alt="Order Screen" />
+  <img src="./design/order_create.png" width="300" alt="Create Order Screen" />
+</p>
 
 ## About me
 

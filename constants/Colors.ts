@@ -27,7 +27,7 @@ const adjustBrightness = (hex: string, percent: number) => {
 };
 
 
-const brandColor = '#0059ff';
+const brandColor = '#00B2A9';
 const errorColor = '#dc2626';
 
 export const Colors = {
@@ -39,7 +39,7 @@ export const Colors = {
     tabIconSelected: brandColor,
     // Add semantic colors
     border: '#E5E7EB',
-    cardBackground: '#c2c2c2',
+    cardBackground: '#f2f2f2',
     inputBackground: '#F9FAFB',
     error: errorColor,
     primary: {
@@ -53,13 +53,13 @@ export const Colors = {
   },
   dark: {
     text: '#ECEDEE',
-    background: '#151718',
+    background: '#151515',
     tint: brandColor,
     tabIconDefault: '#9BA1A6',
     tabIconSelected: brandColor,
     // Add semantic colors
     border: '#374151',
-    cardBackground: '#3a3a3a',
+    cardBackground: '#252525',
     inputBackground: '#1F2937',
     error: errorColor,
     primary: {

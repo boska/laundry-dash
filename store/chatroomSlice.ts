@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { introMessage } from './messages/intro';
 
 interface Message {
     id: string;
@@ -15,20 +16,12 @@ interface ChatroomState {
 }
 
 const initialState: ChatroomState = {
-    messages: [
-        {
-            id: 'intro-1',
-            text: "Hi, I'm Yang Lee! 👋\n\n" +
-                "I'm here to help you with:\n" +
-                "• iOS & Android & Web\n" +
-                "• Elegant UX\n" +
-                "• RWD\n" +
-                "• Realtime\n\n" +
-                "How can I assist you today?",
-            sender: 'other',
-            timestamp: Date.now()
-        }
-    ],
+    messages: [{
+        id: 'intro-1',
+        text: introMessage,
+        sender: 'other' as const,
+        timestamp: Date.now()
+    }],
     isLoading: false,
     error: null,
     inputText: '',

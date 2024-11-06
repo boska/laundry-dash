@@ -7,6 +7,7 @@ import {
     View,
     Pressable,
     Keyboard,
+    Animated,
 } from 'react-native';
 import { ThemedView } from '@/components/ThemedView';
 import { Ionicons } from '@expo/vector-icons';
@@ -16,7 +17,7 @@ import { addMessage, setInputText, clearInputText } from '../store/chatroomSlice
 import { NoData } from '@/components/NoData';
 import { useTheme } from '@/ctx/ThemeContext';
 import Markdown from 'react-native-markdown-display';
-
+import { ThemedText } from '@/components/ThemedText';
 interface Message {
     id: string;
     text: string;
@@ -82,7 +83,7 @@ export default function ChatRoom() {
     const renderMessage = (message: Message) => {
         const bgColor = message.sender === 'user'
             ? colors.cardBackground
-            : colors.background;
+            : colors.cardBackground;
 
         const textColor = colors.text;
 
@@ -148,7 +149,7 @@ export default function ChatRoom() {
                 style={styles.messagesContainer}
                 contentContainerStyle={{
                     paddingBottom: 16,
-                    paddingTop: insets.top || 16,
+                    addingTop: 16,
                     flexGrow: 1
                 }}
                 keyboardDismissMode="interactive"
@@ -210,9 +211,9 @@ const styles = StyleSheet.create({
         padding: 16,
     },
     messageContainer: {
-        maxWidth: '70%',
+        maxWidth: '85%',
         padding: 12,
-        borderRadius: 20,
+        borderRadius: 13,
         marginBottom: 8,
     },
     userMessage: {

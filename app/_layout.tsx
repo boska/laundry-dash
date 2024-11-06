@@ -21,16 +21,16 @@ const DRAWER_SCREENS = [
     name: '(tabs)' as const,
     options: {
       headerShown: true,
-      title: 'LaundryDash',
+      title: '',
       drawerLabel: 'Home',
     }
   },
   {
-    name: 'settings' as const,
+    name: 'blog' as const,
     options: {
       headerShown: true,
-      title: 'Settings',
-      drawerLabel: 'Settings'
+      title: 'Blog',
+      drawerLabel: 'Blog',
     }
   },
   {
@@ -45,26 +45,18 @@ const DRAWER_SCREENS = [
     name: 'order/[id]' as const,
     options: {
       headerShown: true,
-      title: '',
+      title: 'LaundryDash',
       drawerLabel: 'Orders',
     }
   },
   {
-    name: 'map' as const,
+    name: 'settings' as const,
     options: {
       headerShown: true,
-      title: '',
-      drawerLabel: 'Map',
+      title: 'Settings',
+      drawerLabel: 'Settings'
     }
   },
-  {
-    name: 'blog' as const,
-    options: {
-      headerShown: true,
-      title: 'Blog',
-      drawerLabel: 'Blog',
-    }
-  }
 ] as const;
 
 function NavigationContent() {
