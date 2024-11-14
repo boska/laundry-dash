@@ -19,6 +19,7 @@ import { useTheme } from '@/ctx/ThemeContext';
 import Markdown from 'react-native-markdown-display';
 import { ThemedText } from '@/components/ThemedText';
 import { Gyroscope } from 'expo-sensors';
+import { throttle } from 'lodash';
 
 interface Message {
     id: string;
@@ -46,22 +47,57 @@ const GyroscopeMessage = () => {
     const [subscription, setSubscription] = useState(null);
     const { colors } = useTheme();
 
+    // Add smoothing factor
+    const alpha = 0.8; // Adjust between 0 and 1 (higher = smoother but more latency)
+    const prevValues = useRef({ x: 0, y: 0, z: 0 });
+
+    // Smooth the values using exponential moving average
+    const smoothValue = (newValue: number, prevValue: number) => {
+        return alpha * prevValue + (1 - alpha) * newValue;
+    };
+
+    // Throttle the update function
+    const updateData = throttle((data) => {
+        const smoothedData = {
+            x: smoothValue(data.x, prevValues.current.x),
+            y: smoothValue(data.y, prevValues.current.y),
+            z: smoothValue(data.z, prevValues.current.z),
+        };
+
+        prevValues.current = smoothedData;
+        setData(smoothedData);
+    }, 16); // ~60fps
+
     useEffect(() => {
         const subscription = Gyroscope.addListener(data => {
-            setData(data);
+            // Ignore tiny movements
+            const threshold = 0.5;
+            const filteredData = {
+                x: Math.abs(data.x) < threshold ? 0 : data.x,
+                y: Math.abs(data.y) < threshold ? 0 : data.y,
+                z: Math.abs(data.z) < threshold ? 0 : data.z,
+            };
+
+            updateData(filteredData);
         });
+
         setSubscription(subscription);
 
         return () => {
             subscription.remove();
+            updateData.cancel(); // Clean up throttle
         };
     }, []);
 
-    const indicatorSize = Math.abs((x + y + z) * 20) + 60;
+    // Smooth out the size changes
+    const baseSize = 60;
+    const maxSizeChange = 40;
+    const movement = Math.abs(x + y + z);
+    const indicatorSize = baseSize + Math.min(movement * 20, maxSizeChange);
 
     return (
         <View style={styles.gyroscopeContainer}>
-            <View style={[
+            <Animated.View style={[
                 styles.gyroscopeIndicator,
                 {
                     width: indicatorSize,
@@ -79,9 +115,9 @@ const GyroscopeMessage = () => {
                     size={indicatorSize / 2}
                     color={colors.background}
                 />
-            </View>
+            </Animated.View>
             <ThemedText style={styles.gyroscopeText}>
-                x: {x.toFixed(2)} y: {y.toFixed(2)} z: {z.toFixed(2)}
+                x: {x.toFixed(3)} y: {y.toFixed(3)} z: {z.toFixed(3)}
             </ThemedText>
         </View>
     );
