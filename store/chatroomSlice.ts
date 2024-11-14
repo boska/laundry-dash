@@ -6,6 +6,7 @@ interface Message {
     text: string;
     sender: 'user' | 'other';
     timestamp: number;
+    type?: 'text' | 'gyroscope';
 }
 
 interface ChatroomState {
@@ -20,8 +21,17 @@ const initialState: ChatroomState = {
         id: 'intro-1',
         text: introMessage,
         sender: 'other' as const,
-        timestamp: Date.now()
-    }],
+        timestamp: Date.now(),
+        type: 'text'
+    },
+    {
+        id: 'gyroscope-1',
+        text: 'Hello',
+        sender: 'other' as const,
+        timestamp: Date.now(),
+        type: 'gyroscope'
+    }
+    ],
     isLoading: false,
     error: null,
     inputText: '',

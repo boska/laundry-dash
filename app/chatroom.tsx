@@ -18,11 +18,14 @@ import { NoData } from '@/components/NoData';
 import { useTheme } from '@/ctx/ThemeContext';
 import Markdown from 'react-native-markdown-display';
 import { ThemedText } from '@/components/ThemedText';
+import { Gyroscope } from 'expo-sensors';
+
 interface Message {
     id: string;
     text: string;
     sender: 'user' | 'other';
-    timestamp: Date;
+    timestamp: number;
+    type?: 'text' | 'gyroscope';
 }
 
 const inputAccessoryViewID = 'uniqueID';
@@ -35,6 +38,53 @@ const adjustOpacity = (color: string, opacity: number): string => {
     const g = parseInt(hex.substring(2, 4), 16);
     const b = parseInt(hex.substring(4, 6), 16);
     return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+};
+
+// Add this component for gyroscope message
+const GyroscopeMessage = () => {
+    const [{ x, y, z }, setData] = useState({ x: 0, y: 0, z: 0 });
+    const [subscription, setSubscription] = useState(null);
+    const { colors } = useTheme();
+
+    useEffect(() => {
+        const subscription = Gyroscope.addListener(data => {
+            setData(data);
+        });
+        setSubscription(subscription);
+
+        return () => {
+            subscription.remove();
+        };
+    }, []);
+
+    const indicatorSize = Math.abs((x + y + z) * 20) + 60;
+
+    return (
+        <View style={styles.gyroscopeContainer}>
+            <View style={[
+                styles.gyroscopeIndicator,
+                {
+                    width: indicatorSize,
+                    height: indicatorSize,
+                    backgroundColor: colors.tint,
+                    transform: [
+                        { rotateX: `${x * 90}deg` },
+                        { rotateY: `${y * 90}deg` },
+                        { rotateZ: `${z * 90}deg` },
+                    ],
+                }
+            ]}>
+                <Ionicons
+                    name="compass-outline"
+                    size={indicatorSize / 2}
+                    color={colors.background}
+                />
+            </View>
+            <ThemedText style={styles.gyroscopeText}>
+                x: {x.toFixed(2)} y: {y.toFixed(2)} z: {z.toFixed(2)}
+            </ThemedText>
+        </View>
+    );
 };
 
 export default function ChatRoom() {
@@ -84,6 +134,22 @@ export default function ChatRoom() {
         const bgColor = message.sender === 'user'
             ? colors.cardBackground
             : colors.cardBackground;
+
+        // If it's a gyroscope message
+        if (message.type === 'gyroscope') {
+            return (
+                <View
+                    key={message.id}
+                    style={[
+                        styles.messageContainer,
+                        styles.otherMessage,
+                        { backgroundColor: bgColor }
+                    ]}
+                >
+                    <GyroscopeMessage />
+                </View>
+            );
+        }
 
         const textColor = colors.text;
 
@@ -243,5 +309,20 @@ const styles = StyleSheet.create({
     sendButton: {
         padding: 8,
         marginLeft: 4,
+    },
+    gyroscopeContainer: {
+        alignItems: 'center',
+        padding: 8,
+    },
+    gyroscopeIndicator: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 100,
+        opacity: 0.8,
+        marginBottom: 8,
+    },
+    gyroscopeText: {
+        fontSize: 12,
+        opacity: 0.7,
     }
 });
