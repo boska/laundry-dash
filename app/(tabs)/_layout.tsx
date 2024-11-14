@@ -1,11 +1,10 @@
 import { useEffect } from 'react';
 import * as Localization from 'expo-localization';
 import { Language } from '@/constants/i18n';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { useAppDispatch } from '@/store/hooks';
 import { setLanguage } from '@/store/languageSlice';
-import PostListScreen from '../../components/GithubFeed';
-import { Cart } from '@/components/Cart';
-import ChatRoom from '../chatroom';
+import { GyroscopeView } from '@/components/GyroscopeView';
+
 export default function TabLayout2() {
   const dispatch = useAppDispatch();
 
@@ -18,7 +17,7 @@ export default function TabLayout2() {
 
   return (
     <>
-      <ChatRoom />
+      <GyroscopeView />
     </>
   );
 }

@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { Gyroscope } from 'expo-sensors';
 import { ThemedView } from './ThemedView';
 import { ThemedText } from './ThemedText';
 import { useTheme } from '@/ctx/ThemeContext';
 import { Ionicons } from '@expo/vector-icons';
+import { throttle } from 'lodash';
 
 export const GyroscopeView = () => {
     const [{ x, y, z }, setData] = useState({
@@ -15,10 +16,39 @@ export const GyroscopeView = () => {
     const [subscription, setSubscription] = useState(null);
     const { colors } = useTheme();
 
+    // Add smoothing factor
+    const alpha = 0.9; // Adjust between 0 and 1 (higher = smoother but more latency)
+    const prevValues = useRef({ x: 0, y: 0, z: 0 });
+
+    // Smooth the values using exponential moving average
+    const smoothValue = (newValue: number, prevValue: number) => {
+        return alpha * prevValue + (1 - alpha) * newValue;
+    };
+
+    // Throttle the update function
+    const updateData = throttle((data) => {
+        const smoothedData = {
+            x: smoothValue(data.x, prevValues.current.x),
+            y: smoothValue(data.y, prevValues.current.y),
+            z: smoothValue(data.z, prevValues.current.z),
+        };
+
+        prevValues.current = smoothedData;
+        setData(smoothedData);
+    }, 16); // ~60fps
+
     const _subscribe = () => {
         setSubscription(
             Gyroscope.addListener(gyroscopeData => {
-                setData(gyroscopeData);
+                // Ignore tiny movements
+                const threshold = 0.1;
+                const filteredData = {
+                    x: Math.abs(gyroscopeData.x) < threshold ? 0 : gyroscopeData.x,
+                    y: Math.abs(gyroscopeData.y) < threshold ? 0 : gyroscopeData.y,
+                    z: Math.abs(gyroscopeData.z) < threshold ? 0 : gyroscopeData.z,
+                };
+
+                updateData(filteredData);
             })
         );
     };
@@ -26,6 +56,7 @@ export const GyroscopeView = () => {
     const _unsubscribe = () => {
         subscription && subscription.remove();
         setSubscription(null);
+        updateData.cancel(); // Clean up throttle
     };
 
     useEffect(() => {
@@ -33,18 +64,14 @@ export const GyroscopeView = () => {
         return () => _unsubscribe();
     }, []);
 
-    // Visual indicator size based on gyroscope values
-    const indicatorSize = Math.abs((x + y + z) * 20) + 100;
+    // Smooth out the size changes
+    const baseSize = 120;
+    const maxSizeChange = 40;
+    const movement = Math.abs(x + y + z);
+    const indicatorSize = baseSize + Math.min(movement * 20, maxSizeChange);
 
     return (
         <ThemedView style={styles.container}>
-            <View style={styles.dataContainer}>
-                <ThemedText style={styles.title}>Gyroscope Values</ThemedText>
-                <ThemedText style={styles.value}>x: {x.toFixed(2)}</ThemedText>
-                <ThemedText style={styles.value}>y: {y.toFixed(2)}</ThemedText>
-                <ThemedText style={styles.value}>z: {z.toFixed(2)}</ThemedText>
-            </View>
-
             <View style={styles.visualContainer}>
                 <View
                     style={[
@@ -52,7 +79,7 @@ export const GyroscopeView = () => {
                         {
                             width: indicatorSize,
                             height: indicatorSize,
-                            backgroundColor: colors.tint,
+                            backgroundColor: 'transparent',
                             transform: [
                                 { rotateX: `${x * 90}deg` },
                                 { rotateY: `${y * 90}deg` },
@@ -62,21 +89,12 @@ export const GyroscopeView = () => {
                     ]}
                 >
                     <Ionicons
-                        name="compass-outline"
-                        size={indicatorSize / 2}
-                        color={colors.background}
+                        name="heart"
+                        size={indicatorSize / 1.5}
+                        color="#ff0000"
                     />
                 </View>
             </View>
-
-            <TouchableOpacity
-                onPress={subscription ? _unsubscribe : _subscribe}
-                style={[styles.button, { backgroundColor: colors.tint }]}
-            >
-                <ThemedText style={styles.buttonText}>
-                    {subscription ? 'Stop' : 'Start'} Gyroscope
-                </ThemedText>
-            </TouchableOpacity>
         </ThemedView>
     );
 };
