@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, Dimensions } from 'react-native';
 import { Gyroscope } from 'expo-sensors';
 import { ThemedView } from './ThemedView';
 import { ThemedText } from './ThemedText';
@@ -8,16 +8,18 @@ import { Ionicons } from '@expo/vector-icons';
 import { throttle } from 'lodash';
 
 export const GyroscopeView = () => {
-    const [{ x, y, z }, setData] = useState({
-        x: 0,
-        y: 0,
-        z: 0,
-    });
+    const [{ x, y, z }, setData] = useState({ x: 0, y: 0, z: 0 });
+    const [iconPosition, setIconPosition] = useState({ x: 0, y: 0 });
     const [subscription, setSubscription] = useState(null);
     const { colors } = useTheme();
 
+    // Get screen dimensions
+    const { width, height } = Dimensions.get('window');
+    const centerX = width / 2;
+    const centerY = height / 2;
+
     // Add smoothing factor
-    const alpha = 0.9; // Adjust between 0 and 1 (higher = smoother but more latency)
+    const alpha = 0.8;
     const prevValues = useRef({ x: 0, y: 0, z: 0 });
 
     // Smooth the values using exponential moving average
@@ -37,6 +39,14 @@ export const GyroscopeView = () => {
         setData(smoothedData);
     }, 16); // ~60fps
 
+    // Update position based on gyroscope data
+    const updatePosition = throttle((gyroData) => {
+        setIconPosition(prev => ({
+            y: Math.max(-centerY, Math.min(centerY, prev.y + gyroData.x * 15)),
+            x: Math.max(-centerX, Math.min(centerX, prev.x - gyroData.y * 15))
+        }));
+    }, 16);
+
     const _subscribe = () => {
         setSubscription(
             Gyroscope.addListener(gyroscopeData => {
@@ -49,6 +59,7 @@ export const GyroscopeView = () => {
                 };
 
                 updateData(filteredData);
+                updatePosition(filteredData);
             })
         );
     };
@@ -64,15 +75,40 @@ export const GyroscopeView = () => {
         return () => _unsubscribe();
     }, []);
 
-    // Smooth out the size changes
-    const baseSize = 120;
-    const maxSizeChange = 40;
-    const movement = Math.abs(x + y + z);
-    const indicatorSize = baseSize + Math.min(movement * 20, maxSizeChange);
+    // Calculate movement intensity from position changes
+    const calculateMovementIntensity = () => {
+        const positionChange = Math.sqrt(
+            Math.pow(iconPosition.x, 2) +
+            Math.pow(iconPosition.y, 2)
+        );
+        // Normalize the value between 0 and 1
+        return Math.min(positionChange / 100, 1);
+    };
+
+    // Smooth out the size changes with more dramatic effect
+    const baseSize = 80;  // Increased base size
+    const maxSizeChange = 120;  // Increased max size change
+    const movement = Math.abs(x + y + z) + calculateMovementIntensity();
+    const indicatorSize = baseSize + Math.min(movement * 40, maxSizeChange);
 
     return (
         <ThemedView style={styles.container}>
             <View style={styles.visualContainer}>
+                <View style={styles.dataDisplay}>
+                    <ThemedText style={styles.valueText}>
+                        Gyro X: {x.toFixed(3)}
+                    </ThemedText>
+                    <ThemedText style={styles.valueText}>
+                        Gyro Y: {y.toFixed(3)}
+                    </ThemedText>
+                    <ThemedText style={styles.valueText}>
+                        Gyro Z: {z.toFixed(3)}
+                    </ThemedText>
+                    <ThemedText style={styles.valueText}>
+                        Position: {iconPosition.x.toFixed(0)}, {iconPosition.y.toFixed(0)}
+                    </ThemedText>
+                </View>
+
                 <View
                     style={[
                         styles.indicator,
@@ -81,16 +117,15 @@ export const GyroscopeView = () => {
                             height: indicatorSize,
                             backgroundColor: 'transparent',
                             transform: [
-                                { rotateX: `${x * 90}deg` },
-                                { rotateY: `${y * 90}deg` },
-                                { rotateZ: `${z * 90}deg` },
+                                { translateX: iconPosition.x },
+                                { translateY: iconPosition.y },
                             ],
                         },
                     ]}
                 >
                     <Ionicons
                         name="heart"
-                        size={indicatorSize / 1.5}
+                        size={indicatorSize / 1.2}
                         color="#ff0000"
                     />
                 </View>
@@ -139,5 +174,19 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: '600',
         color: '#fff',
+    },
+    dataDisplay: {
+        position: 'absolute',
+        top: 40,
+        left: 20,
+        backgroundColor: 'rgba(0,0,0,0.1)',
+        padding: 10,
+        borderRadius: 10,
+        zIndex: 1,
+    },
+    valueText: {
+        fontSize: 14,
+        marginVertical: 2,
+        fontFamily: 'monospace',  // For better number alignment
     },
 }); 
