@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Dimensions } from 'react-native';
-import { Gyroscope } from 'expo-sensors';
+import { Accelerometer } from 'expo-sensors';
 import { ThemedView } from './ThemedView';
 import { ThemedText } from './ThemedText';
 import { useTheme } from '@/ctx/ThemeContext';
@@ -18,8 +18,8 @@ export const GyroscopeView = () => {
     const centerX = width / 2;
     const centerY = height / 2;
 
-    // Add smoothing factor
-    const alpha = 0.8;
+    // Increase smoothing factor (closer to 1 = more smooth)
+    const alpha = 0.8;  // Changed from 0.8 to 0.95
     const prevValues = useRef({ x: 0, y: 0, z: 0 });
 
     // Smooth the values using exponential moving average
@@ -37,25 +37,36 @@ export const GyroscopeView = () => {
 
         prevValues.current = smoothedData;
         setData(smoothedData);
-    }, 16); // ~60fps
+    }, 32); // ~60fps
 
-    // Update position based on gyroscope data
-    const updatePosition = throttle((gyroData) => {
-        setIconPosition(prev => ({
-            y: Math.max(-centerY, Math.min(centerY, prev.y + gyroData.x * 15)),
-            x: Math.max(-centerX, Math.min(centerX, prev.x - gyroData.y * 15))
-        }));
-    }, 16);
+    // Update position based on accelerometer data with reduced sensitivity
+    const updatePosition = throttle((data) => {
+        // Reduce sensitivity by dividing the input values
+        const sensitivity = 0.5;  // Adjust this value (lower = less sensitive)
+
+        setIconPosition(prev => {
+            // Apply smoothing to the position updates
+            const newX = smoothValue(centerX * data.x * sensitivity, prev.x);
+            const newY = smoothValue(centerY * -data.y * sensitivity, prev.y);
+
+            return {
+                x: Math.max(-centerX, Math.min(centerX, newX)),
+                y: Math.max(-centerY, Math.min(centerY, newY))
+            };
+        });
+    }, 32);  // Increased throttle time for smoother updates
 
     const _subscribe = () => {
+        Accelerometer.setUpdateInterval(32);  // Reduced update frequency
+
         setSubscription(
-            Gyroscope.addListener(gyroscopeData => {
-                // Ignore tiny movements
-                const threshold = 0.1;
+            Accelerometer.addListener(accelData => {
+                // Increased threshold to ignore more tiny movements
+                const threshold = 0.01;  // Increased from 0.05
                 const filteredData = {
-                    x: Math.abs(gyroscopeData.x) < threshold ? 0 : gyroscopeData.x,
-                    y: Math.abs(gyroscopeData.y) < threshold ? 0 : gyroscopeData.y,
-                    z: Math.abs(gyroscopeData.z) < threshold ? 0 : gyroscopeData.z,
+                    x: Math.abs(accelData.x) < threshold ? 0 : accelData.x,
+                    y: Math.abs(accelData.y) < threshold ? 0 : accelData.y,
+                    z: Math.abs(accelData.z) < threshold ? 0 : accelData.z,
                 };
 
                 updateData(filteredData);
@@ -89,7 +100,7 @@ export const GyroscopeView = () => {
     const baseSize = 80;  // Increased base size
     const maxSizeChange = 120;  // Increased max size change
     const movement = Math.abs(x + y + z) + calculateMovementIntensity();
-    const indicatorSize = baseSize + Math.min(movement * 40, maxSizeChange);
+    const indicatorSize = baseSize;  //+ Math.min(movement * 40, maxSizeChange);
 
     return (
         <ThemedView style={styles.container}>
